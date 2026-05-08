@@ -122,8 +122,11 @@
         list.innerHTML = `<div class="alert alert-info">該当する予約がありません。</div>`; return;
       }
 
-      // ソート：チェックイン日降順
-      bookings.sort((a,b) => new Date(b.checkin) - new Date(a.checkin));
+      // ランダム順（毎回シャッフル）
+      for (let i = bookings.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [bookings[i], bookings[j]] = [bookings[j], bookings[i]];
+      }
 
       list.innerHTML = `
         <div style="overflow-x:auto">
@@ -156,7 +159,7 @@
                   <tr>
                     <td style="font-size:12px;color:var(--primary);font-weight:600">${b.bookingNo}</td>
                     <td><span class="hotel-link" onclick="window.open('hotel.html?id=${b.hotelId}','_blank')">${hotel?.name || "不明"}</span></td>
-                    <td style="white-space:nowrap;font-size:13px">${App.fmtDateJP(b.checkin)}</td>
+                    <td style="white-space:nowrap;font-size:13px">${App.fmtDateSlash(b.checkin)}</td>
                     <td style="text-align:center">${b.nights}泊</td>
                     <td style="font-weight:700;white-space:nowrap">${App.fmtPrice(b.totalPrice)}</td>
                     <td>${statusBadge}</td>

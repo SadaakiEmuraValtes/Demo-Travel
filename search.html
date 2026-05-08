@@ -25,11 +25,11 @@
         </div>
         <div class="form-group" style="min-width:140px">
           <label>チェックイン</label>
-          <input type="date" id="f-checkin">
+          <input type="text" id="f-checkin" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
         </div>
         <div class="form-group" style="min-width:140px">
           <label>チェックアウト</label>
-          <input type="date" id="f-checkout">
+          <input type="text" id="f-checkout" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
         </div>
         <div class="form-group" style="max-width:90px">
           <label>人数</label>
@@ -44,7 +44,7 @@
           <label>キーワード</label>
           <input type="text" id="f-keyword" placeholder="ホテル名・施設など">
         </div>
-        <button class="btn btn-primary" onclick="doSearch()">🔍 検索</button>
+        <button class="btn btn-primary" onclick="doSearch(true)">🔍 検索</button>
       </div>
       <div id="date-warn" class="alert alert-warn hidden" style="margin-top:10px;margin-bottom:0">
         ⚠️ チェックインは予約日の翌日以降のみ選択できます
@@ -131,19 +131,24 @@
         document.getElementById("f-region").appendChild(opt);
       });
 
-      document.getElementById("f-region").value  = sp.region  || "all";
-      document.getElementById("f-checkin").value = sp.checkin || "";
-      document.getElementById("f-checkout").value= sp.checkout|| "";
-      document.getElementById("f-guests").value  = sp.guests  || "2";
-      document.getElementById("f-keyword").value = sp.keyword || "";
-      document.getElementById("f-checkin").min   = App.fmtDate(tomorrow);
+      document.getElementById("f-region").value  = sp.region   || "all";
+      document.getElementById("f-checkin").value = sp.checkin  ? sp.checkin.replace(/-/g, "/")  : "";
+      document.getElementById("f-checkout").value= sp.checkout ? sp.checkout.replace(/-/g, "/") : "";
+      document.getElementById("f-guests").value  = sp.guests   || "2";
+      document.getElementById("f-keyword").value = sp.keyword  || "";
 
       // 日程バリデーション
       document.getElementById("f-checkin").addEventListener("change", () => {
-        const ci = new Date(document.getElementById("f-checkin").value);
+        const ciStr = App.parseDateStr(document.getElementById("f-checkin").value);
         const warn = document.getElementById("date-warn");
-        if (ci <= tomorrow) { warn.classList.remove("hidden"); }
-        else { warn.classList.add("hidden"); }
+        if (ciStr) {
+          const ci = new Date(ciStr + "T00:00:00");
+          const tmr = new Date(); tmr.setDate(tmr.getDate() + 1); tmr.setHours(0,0,0,0);
+          if (ci <= tmr) { warn.classList.remove("hidden"); }
+          else { warn.classList.add("hidden"); }
+        } else {
+          warn.classList.add("hidden");
+        }
       });
     }
 
@@ -174,15 +179,25 @@
       doSearch();
     }
 
-    function doSearch() {
+    function doSearch(withLoading = false) {
       const region   = document.getElementById("f-region").value;
-      const checkin  = document.getElementById("f-checkin").value;
-      const checkout = document.getElementById("f-checkout").value;
+      const checkin  = App.parseDateStr(document.getElementById("f-checkin").value);
+      const checkout = App.parseDateStr(document.getElementById("f-checkout").value);
       const guests   = document.getElementById("f-guests").value;
       const keyword  = document.getElementById("f-keyword").value.trim();
 
-      App.saveSearchParams({ region, checkin, checkout, guests, keyword });
+      if (withLoading) {
+        App.showLoading("ホテルを検索中...");
+        setTimeout(() => {
+          App.hideLoading();
+          App.saveSearchParams({ region, checkin, checkout, guests, keyword });
+          allResults = App.searchHotels({ region, checkin, checkout, guests: +guests, keyword });
+          applyFilters();
+        }, 3000 + Math.random() * 2000);
+        return;
+      }
 
+      App.saveSearchParams({ region, checkin, checkout, guests, keyword });
       allResults = App.searchHotels({ region, checkin, checkout, guests: +guests, keyword });
       applyFilters();
     }

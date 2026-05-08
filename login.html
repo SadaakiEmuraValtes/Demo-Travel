@@ -79,19 +79,23 @@
       if (!email) { document.getElementById("g-email").classList.add("has-error"); return; }
       if (!pw)    { document.getElementById("g-pw").classList.add("has-error"); return; }
 
-      const res = App.login(email, pw);
-      if (!res.ok) {
-        errEl.textContent = res.msg;
-        errEl.classList.remove("hidden");
-        return;
-      }
-
-      App.showToast(`ようこそ、${res.user.name}さん！`, "success");
-      const redir = sessionStorage.getItem("tn_redirect_after_login");
+      App.showLoading("ログイン中...");
+      const delay = 3000 + Math.random() * 2000;
       setTimeout(() => {
-        if (redir) { sessionStorage.removeItem("tn_redirect_after_login"); window.location.href = redir; }
-        else window.location.href = "mypage.html";
-      }, 500);
+        App.hideLoading();
+        const res = App.login(email, pw);
+        if (!res.ok) {
+          errEl.textContent = res.msg;
+          errEl.classList.remove("hidden");
+          return;
+        }
+        App.showToast(`ようこそ、${res.user.name}さん！`, "success");
+        const redir = sessionStorage.getItem("tn_redirect_after_login");
+        setTimeout(() => {
+          if (redir) { sessionStorage.removeItem("tn_redirect_after_login"); window.location.href = redir; }
+          else window.location.href = "mypage.html";
+        }, 500);
+      }, delay);
     }
   </script>
 </body>

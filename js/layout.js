@@ -52,6 +52,15 @@ function buildFooter() {
 <div id="toast-container"></div>`;
 }
 
+// 日付テキスト入力の自動フォーマット（yyyy/mm/dd）
+function autoFormatDate(input) {
+  const digits = input.value.replace(/[^0-9]/g, "").slice(0, 8);
+  let v = digits;
+  if (digits.length > 6) v = digits.slice(0,4) + "/" + digits.slice(4,6) + "/" + digits.slice(6);
+  else if (digits.length > 4) v = digits.slice(0,4) + "/" + digits.slice(4);
+  input.value = v;
+}
+
 function headerSearch() {
   const kw = document.getElementById("hs-keyword")?.value.trim() || "";
   const sp = App.loadSearchParams();

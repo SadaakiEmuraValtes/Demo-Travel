@@ -53,6 +53,7 @@ const App = (() => {
   }
 
   function logout() {
+    if (!confirm("ログアウトしますか？")) return;
     _state.currentUser = null;
     localStorage.removeItem(LS.USER);
     renderHeader();
@@ -284,6 +285,37 @@ const App = (() => {
   }
 
   // ── ユーティリティ ────────────────────────────────────────
+  // yyyy/mm/dd 形式で表示（予約一覧等）
+  function fmtDateSlash(d) {
+    return fmtDate(d).replace(/-/g, "/");
+  }
+
+  // テキスト入力 yyyy/mm/dd or yyyy-mm-dd → 内部形式 yyyy-mm-dd に変換
+  function parseDateStr(str) {
+    if (!str) return "";
+    const clean = str.replace(/[\/\-]/g, "");
+    if (clean.length !== 8 || !/^\d{8}$/.test(clean)) return "";
+    const y = clean.slice(0,4), m = clean.slice(4,6), d = clean.slice(6,8);
+    const dt = new Date(`${y}-${m}-${d}T00:00:00`);
+    if (isNaN(dt.getTime())) return "";
+    return `${y}-${m}-${d}`;
+  }
+
+  // ローディングオーバーレイ（操作ロック付き）
+  function showLoading(msg = "読み込み中...") {
+    if (document.getElementById("loading-overlay")) return;
+    const el = document.createElement("div");
+    el.id = "loading-overlay";
+    el.innerHTML = `
+      <div class="spinner" style="width:48px;height:48px;border-width:4px"></div>
+      <div style="font-size:15px;font-weight:600;color:var(--primary)">${msg}</div>`;
+    document.body.appendChild(el);
+  }
+
+  function hideLoading() {
+    document.getElementById("loading-overlay")?.remove();
+  }
+
   function fmtDate(d) {
     const dt = d instanceof Date ? d : new Date(d);
     const y = dt.getFullYear();
@@ -364,10 +396,11 @@ const App = (() => {
     getBookings, createBooking, cancelBooking,
     isFavorite, toggleFavorite, getFavoriteHotels,
     searchHotels, checkAvailability,
-    fmtDate, fmtDateJP, calcNights, fmtPrice,
+    fmtDate, fmtDateJP, fmtDateSlash, parseDateStr, calcNights, fmtPrice,
     getHotelById, getRegionById, regionName,
     showToast, starsHtml, hotelBgColor,
     saveSearchParams, loadSearchParams,
+    showLoading, hideLoading,
     renderHeader,
   };
 })();

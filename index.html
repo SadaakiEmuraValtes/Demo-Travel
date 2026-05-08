@@ -27,11 +27,11 @@
       </div>
       <div class="field">
         <label>チェックイン</label>
-        <input type="date" id="s-checkin">
+        <input type="text" id="s-checkin" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
       </div>
       <div class="field">
         <label>チェックアウト</label>
-        <input type="date" id="s-checkout">
+        <input type="text" id="s-checkout" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
       </div>
       <div class="field" style="max-width:100px">
         <label>人数</label>
@@ -88,9 +88,8 @@
       tomorrow.setDate(tomorrow.getDate() + 1);
       const dayAfter = new Date(tomorrow);
       dayAfter.setDate(dayAfter.getDate() + 2);
-      document.getElementById("s-checkin").value = App.fmtDate(tomorrow);
-      document.getElementById("s-checkout").value = App.fmtDate(dayAfter);
-      document.getElementById("s-checkin").min = App.fmtDate(tomorrow);
+      document.getElementById("s-checkin").value = App.fmtDate(tomorrow).replace(/-/g, "/");
+      document.getElementById("s-checkout").value = App.fmtDate(dayAfter).replace(/-/g, "/");
     }
 
     function buildRegionOptions() {
@@ -192,12 +191,16 @@
     }
 
     function doSearch() {
-      const region  = document.getElementById("s-region").value;
-      const checkin = document.getElementById("s-checkin").value;
-      const checkout= document.getElementById("s-checkout").value;
-      const guests  = document.getElementById("s-guests").value;
+      const region   = document.getElementById("s-region").value;
+      const checkin  = App.parseDateStr(document.getElementById("s-checkin").value);
+      const checkout = App.parseDateStr(document.getElementById("s-checkout").value);
+      const guests   = document.getElementById("s-guests").value;
       App.saveSearchParams({ region, checkin, checkout, guests });
-      window.location.href = "search.html";
+      App.showLoading("ホテルを検索中...");
+      setTimeout(() => {
+        App.hideLoading();
+        window.location.href = "search.html";
+      }, 3000 + Math.random() * 2000);
     }
   </script>
 </body>

@@ -148,7 +148,7 @@
   </div>
 
   <script>
-    let hotel = null;
+    let bookingHotel = null;
     let sp = {};
     let formData = {};
 
@@ -160,20 +160,20 @@
       if (!sp.hotelId) { window.location.href = "search.html"; return; }
       if (!sp.checkin || !sp.checkout) { window.location.href = `date-select.html?hotelId=${sp.hotelId}`; return; }
 
-      hotel = App.getHotelById(sp.hotelId);
-      if (!hotel) { window.location.href = "search.html"; return; }
+      bookingHotel = App.getHotelById(sp.hotelId);
+      if (!bookingHotel) { window.location.href = "search.html"; return; }
 
       // ホテルサマリー
       const nights = App.calcNights(sp.checkin, sp.checkout);
-      const price  = sp.roomPrice || hotel.priceBase;
+      const price  = sp.roomPrice || bookingHotel.priceBase;
       const total  = price * nights * (sp.rooms || 1);
 
       document.getElementById("hotel-summary").innerHTML = `
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-          <div style="font-size:36px">${App.getRegionById(hotel.region)?.emoji || "🏨"}</div>
+          <div style="font-size:36px">${App.getRegionById(bookingHotel.region)?.emoji || "🏨"}</div>
           <div>
-            <div style="font-size:16px;font-weight:700">${hotel.name}</div>
-            <div style="font-size:13px;color:var(--gray)">📍 ${App.regionName(hotel.region)} &nbsp; ${App.starsHtml(hotel.stars)}</div>
+            <div style="font-size:16px;font-weight:700">${bookingHotel.name}</div>
+            <div style="font-size:13px;color:var(--gray)">📍 ${App.regionName(bookingHotel.region)} &nbsp; ${App.starsHtml(bookingHotel.stars)}</div>
           </div>
           <div style="margin-left:auto;text-align:right">
             <div style="font-size:12px;color:var(--gray)">${App.fmtDateJP(sp.checkin)} → ${App.fmtDateJP(sp.checkout)}</div>
@@ -234,9 +234,9 @@
 
       // 確認テーブル
       const nights = sp.nights || App.calcNights(sp.checkin, sp.checkout);
-      const total  = sp.totalPrice || (hotel.priceBase * nights);
+      const total  = sp.totalPrice || (bookingHotel.priceBase * nights);
       const rows = [
-        ["ホテル",        hotel.name],
+        ["ホテル",        bookingHotel.name],
         ["部屋タイプ",    sp.roomType || "スタンダードダブル"],
         ["チェックイン",  App.fmtDateJP(sp.checkin)],
         ["チェックアウト",App.fmtDateJP(sp.checkout)],
@@ -291,7 +291,7 @@
         guests:    +(sp.guests || 2),
         rooms:     +(sp.rooms || 1),
         roomType:  sp.roomType || "スタンダードダブル",
-        totalPrice:sp.totalPrice || hotel.priceBase * App.calcNights(sp.checkin, sp.checkout),
+        totalPrice:sp.totalPrice || bookingHotel.priceBase * App.calcNights(sp.checkin, sp.checkout),
         specialRequest: formData.special,
       });
 
@@ -310,7 +310,7 @@
       document.getElementById("complete-no").textContent = res.booking.bookingNo;
       document.getElementById("complete-summary").innerHTML = `
         <table class="confirm-table">
-          <tr><td>ホテル</td><td>${hotel.name}</td></tr>
+          <tr><td>ホテル</td><td>${bookingHotel.name}</td></tr>
           <tr><td>チェックイン</td><td>${App.fmtDateJP(sp.checkin)}</td></tr>
           <tr><td>チェックアウト</td><td>${App.fmtDateJP(sp.checkout)}</td></tr>
           <tr><td>合計金額</td><td>${App.fmtPrice(res.booking.totalPrice)}</td></tr>
