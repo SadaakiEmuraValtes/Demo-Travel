@@ -180,37 +180,52 @@ const App = (() => {
   }
 
   // ── 空き確認 ──────────────────────────────────────────────
+
+  // hotelId + date で決定論的な 0〜1 値を生成（同じ引数は常に同じ結果）
+  function _deterministicRng(str) {
+    let h = 5381;
+    for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
+    return (h >>> 0) / 0xffffffff;
+  }
+
+  // soldOutDays を安全にパース
+  function _parseSoldOutDays(hotel) {
+    if (!hotel.soldOutDays) return [];
+    try { return JSON.parse(hotel.soldOutDays.toString().replace(/'/g, '"')); } catch(e) { return []; }
+  }
+
   function checkAvailability(hotelId, checkin, checkout) {
     const hotel = HOTELS.find(h => h.id === hotelId);
     if (!hotel) return { available: false, rooms: [] };
 
-    // 先2週間のグリッド
+    const soldOutDays = _parseSoldOutDays(hotel);
+
+    // 先2週間のグリッド（soldOutDays 基準で決定論的）
     const days = [];
     const today = new Date(); today.setHours(0,0,0,0);
     for (let i = 0; i < 14; i++) {
       const d = new Date(today); d.setDate(today.getDate()+i);
       const dow = d.getDay();
-      let soldOutDays = [];
-      if (hotel.soldOutDays) {
-        try {
-          soldOutDays = JSON.parse(hotel.soldOutDays.toString().replace(/'/g, '"'));
-        } catch(e) {
-          soldOutDays = [];
-        }
-      }
-      const available = !soldOutDays.includes(dow);
-      days.push({ date: fmtDate(d), dow, available });
+      days.push({ date: fmtDate(d), dow, available: !soldOutDays.includes(dow) });
     }
 
-    // 日程指定があれば部屋リストを返す
+    // チェックイン日が満室曜日かどうか（先2週間グリッドと整合）
+    let ciSoldOut = false;
+    if (checkin) {
+      const ciDow = new Date(checkin + "T00:00:00").getDay();
+      ciSoldOut = soldOutDays.includes(ciDow);
+    }
+
+    // 部屋ごとの空き：hotel+checkin でシードした決定論的値を使用
+    const rng = _deterministicRng(hotelId + (checkin || ""));
     const rooms = [
-      { type: "スタンダードシングル", price: hotel.priceBase, available: true },
-      { type: "スタンダードダブル",   price: Math.round(hotel.priceBase * 1.3), available: true },
-      { type: "デラックスツイン",     price: Math.round(hotel.priceBase * 1.6), available: Math.random() > 0.3 },
-      { type: "プレミアムスイート",   price: Math.round(hotel.priceBase * 2.5), available: Math.random() > 0.5 },
+      { type: "スタンダードシングル", price: hotel.priceBase,                   available: !ciSoldOut },
+      { type: "スタンダードダブル",   price: Math.round(hotel.priceBase * 1.3), available: !ciSoldOut },
+      { type: "デラックスツイン",     price: Math.round(hotel.priceBase * 1.6), available: !ciSoldOut && rng > 0.25 },
+      { type: "プレミアムスイート",   price: Math.round(hotel.priceBase * 2.5), available: !ciSoldOut && rng > 0.50 },
     ];
 
-    return { available: true, days, rooms };
+    return { available: !ciSoldOut, days, rooms };
   }
 
   // ── ヘッダー描画 ──────────────────────────────────────────

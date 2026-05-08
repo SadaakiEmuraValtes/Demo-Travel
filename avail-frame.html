@@ -7,6 +7,14 @@
   <style>
     html, body { margin: 0; padding: 0; background: white; overflow: hidden; }
     body { padding: 8px; }
+    .avail-ok.clickable {
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .avail-ok.clickable:hover {
+      background: #6EE7B7 !important;
+      color: #065F46;
+    }
   </style>
 </head>
 <body>
@@ -17,39 +25,59 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(window.location.search);
+      const params  = new URLSearchParams(window.location.search);
       const hotelId = params.get("id");
-      const wrap = document.getElementById("avail-wrap");
+      const wrap    = document.getElementById("avail-wrap");
 
       if (!hotelId) { wrap.textContent = "ホテルIDが指定されていません。"; return; }
 
       const avail = App.checkAvailability(hotelId, null, null);
       if (!avail || !avail.days) { wrap.textContent = "データを取得できませんでした。"; return; }
 
-      const days = avail.days;
-      const DOW = ["日","月","火","水","木","金","土"];
+      const days      = avail.days;
+      const DOW       = ["日","月","火","水","木","金","土"];
       const DOW_COLOR = { 0: "#DC2626", 6: "#0D9488" };
 
       const rows = [days.slice(0, 7), days.slice(7, 14)];
       let html = '<table class="avail-table">';
       rows.forEach(week => {
+        // 日付ヘッダー行
         html += "<tr>" + week.map(d => {
-          const c = DOW_COLOR[d.dow] || "inherit";
-          return `<th>${new Date(d.date + "T00:00:00").getMonth()+1}/${new Date(d.date + "T00:00:00").getDate()}<br><span style="color:${c}">${DOW[d.dow]}</span></th>`;
+          const c   = DOW_COLOR[d.dow] || "inherit";
+          const dt  = new Date(d.date + "T00:00:00");
+          return `<th>${dt.getMonth()+1}/${dt.getDate()}<br><span style="color:${c}">${DOW[d.dow]}</span></th>`;
         }).join("") + "</tr>";
-        html += "<tr>" + week.map(d =>
-          `<td class="${d.available ? "avail-ok" : "avail-ng"}">${d.available ? "空あり" : "満　室"}</td>`
-        ).join("") + "</tr>";
+
+        // 空き状況行
+        html += "<tr>" + week.map(d => {
+          if (d.available) {
+            return `<td class="avail-ok clickable" onclick="goBook('${d.date}')" title="${d.date} でチェックイン →日程選択へ">空あり<br><span style="font-size:10px;opacity:.7">▶予約</span></td>`;
+          } else {
+            return `<td class="avail-ng">満　室</td>`;
+          }
+        }).join("") + "</tr>";
       });
       html += "</table>";
       html += `<div style="display:flex;gap:14px;margin-top:8px;font-size:12px;color:#64748B;flex-wrap:wrap">
-        <span><span style="display:inline-block;width:12px;height:12px;background:#D1FAE5;border:1px solid #CBD5E1;vertical-align:middle;margin-right:4px"></span>空あり</span>
+        <span><span style="display:inline-block;width:12px;height:12px;background:#D1FAE5;border:1px solid #CBD5E1;vertical-align:middle;margin-right:4px"></span>空あり（クリックで日程選択）</span>
         <span><span style="display:inline-block;width:12px;height:12px;background:#FEE2E2;border:1px solid #CBD5E1;vertical-align:middle;margin-right:4px"></span>満室</span>
         <span style="margin-left:auto;font-size:11px">※ 先14日間表示</span>
       </div>`;
 
       wrap.innerHTML = html;
     });
+
+    function goBook(date) {
+      // チェックアウトをチェックイン翌日に自動設定
+      const coDate = new Date(date + "T00:00:00"); coDate.setDate(coDate.getDate() + 1);
+      const hotelId = new URLSearchParams(window.location.search).get("id");
+      const sp = App.loadSearchParams();
+      sp.hotelId  = hotelId;
+      sp.checkin  = date;
+      sp.checkout = App.fmtDate(coDate);
+      App.saveSearchParams(sp);
+      window.parent.location.href = `date-select.html?hotelId=${hotelId}`;
+    }
   </script>
 </body>
 </html>
