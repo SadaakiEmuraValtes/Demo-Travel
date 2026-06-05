@@ -18,7 +18,7 @@
     <h1>✈ TravelNest <span style="font-size:18px;font-weight:400;opacity:.8">Demo</span></h1>
     <p>福岡・東京・名古屋・大阪・フィリピン　5エリア 260+ ホテル</p>
 
-    <div class="search-box">
+    <div id="search-box" class="search-box">
       <div class="field">
         <label>目的地・エリア</label>
         <select id="s-region">
@@ -49,7 +49,7 @@
           <option value="5">5名以上</option>
         </select>
       </div>
-      <button class="btn-search" onclick="doSearch()">🔍 検索</button>
+      <button id="btn-search" class="btn-search" onclick="doSearch()">🔍 検索</button>
     </div>
   </section>
 
@@ -147,6 +147,7 @@
       const region = App.getRegionById(h.region);
       const card = document.createElement("div");
       card.className = "hotel-card";
+      card.dataset.hotelId = h.id;
       card.innerHTML = `
         <div class="hotel-card-img" style="background:${App.hotelBgColor(h.region)}">
           <span>${region?.emoji || "🏨"}</span>

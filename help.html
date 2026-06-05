@@ -87,28 +87,9 @@
     <div id="faq-list"></div>
 
     <!-- 機能一覧 -->
-    <div class="card" style="margin-top:28px;padding:24px">
+    <div class="card" id="feature-section" style="margin-top:28px;padding:24px">
       <h2 style="font-size:18px;color:var(--accent);margin-bottom:16px">📋 実装済み機能一覧</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
-        ${[
-          ["🔍","ホテル検索（ゲスト可）","目的地・日程・人数・キーワード"],
-          ["♾️","無限スクロール","5件ずつ非同期ロード"],
-          ["🏨","ホテル詳細（別ウィンドウ）","写真・施設・先2週間の空き状況"],
-          ["📅","日程選択/空き確認","日程未指定時の中間画面"],
-          ["🛒","一覧から直接予約","検索結果から予約ボタン"],
-          ["✅","予約フロー（3ステップ）","入力→確認→完了"],
-          ["❤️","お気に入り登録","ホテルの保存・一覧表示"],
-          ["📋","予約履歴・キャンセル","マイページで管理"],
-          ["🔐","ログイン/会員登録","セッション管理"],
-          ["📱","レスポンシブ対応","スマートフォン対応"],
-          ["⚠️","免責表示","デモサイト表示"],
-          ["🔄","データ永続化","LocalStorage使用"],
-        ].map(([icon, title, desc]) => `
-          <div style="display:flex;gap:10px;padding:10px;background:var(--gray-lt);border-radius:6px">
-            <span style="font-size:20px">${icon}</span>
-            <div><div style="font-size:13px;font-weight:600">${title}</div><div style="font-size:11px;color:var(--gray)">${desc}</div></div>
-          </div>`).join("")}
-      </div>
+      <div id="feature-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px"></div>
     </div>
   </div>
 
@@ -118,6 +99,7 @@
       buildAccountTable();
       buildValtesTable();
       buildFAQ();
+      buildFeatureGrid();
       // アンカーへスクロール
       if (window.location.hash) {
         setTimeout(() => {
@@ -139,11 +121,13 @@
       USERS.forEach((u, i) => {
         const tr = document.createElement("tr");
         tr.style.background = i % 2 === 0 ? "white" : "var(--gray-lt)";
+        tr.dataset.userEmail = u.email;
+        tr.id = `account-row-${i}`;
         tr.innerHTML = `
-          <td style="padding:10px 12px;font-weight:600">${u.name}</td>
-          <td style="padding:10px 12px">${u.email}</td>
+          <td style="padding:10px 12px;font-weight:600" class="account-name">${u.name}</td>
+          <td style="padding:10px 12px" class="account-email">${u.email}</td>
           <td style="padding:10px 12px">
-            <code style="background:var(--accent);color:white;padding:2px 8px;border-radius:4px;font-size:12px">${u.password}</code>
+            <code class="account-password" style="background:var(--accent);color:white;padding:2px 8px;border-radius:4px;font-size:12px">${u.password}</code>
           </td>
           <td style="padding:10px 12px;font-size:12px;color:var(--gray)">${descriptions[i] || ""}</td>`;
         tbody.appendChild(tr);
@@ -189,6 +173,7 @@
       faqs.forEach((f, i) => {
         const item = document.createElement("div");
         item.className = "faq-item";
+        item.id = `faq-${i}`;
         item.innerHTML = `
           <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
             <span>Q. ${f.q}</span>
@@ -196,6 +181,35 @@
           </div>
           <div class="faq-a">A. ${f.a}</div>`;
         list.appendChild(item);
+      });
+    }
+
+    function buildFeatureGrid() {
+      const items = [
+        ["🔍","ホテル検索（ゲスト可）","目的地・日程・人数・キーワード"],
+        ["♾️","無限スクロール","5件ずつ非同期ロード"],
+        ["🏨","ホテル詳細（別ウィンドウ）","写真・施設・先2週間の空き状況"],
+        ["📅","日程選択/空き確認","日程未指定時の中間画面"],
+        ["🛒","一覧から直接予約","検索結果から予約ボタン"],
+        ["✅","予約フロー（3ステップ）","入力→確認→完了"],
+        ["❤️","お気に入り登録","ホテルの保存・一覧表示"],
+        ["📋","予約履歴・キャンセル","マイページで管理"],
+        ["🔐","ログイン/会員登録","セッション管理"],
+        ["📱","レスポンシブ対応","スマートフォン対応"],
+        ["⚠️","免責表示","デモサイト表示"],
+        ["🔄","データ永続化","LocalStorage使用"],
+      ];
+      const grid = document.getElementById("feature-grid");
+      items.forEach(([icon, title, desc]) => {
+        const div = document.createElement("div");
+        div.style.cssText = "display:flex;gap:10px;padding:10px;background:var(--gray-lt);border-radius:6px";
+        div.innerHTML = `
+          <span style="font-size:20px">${icon}</span>
+          <div>
+            <div style="font-size:13px;font-weight:600">${title}</div>
+            <div style="font-size:11px;color:var(--gray)">${desc}</div>
+          </div>`;
+        grid.appendChild(div);
       });
     }
   </script>

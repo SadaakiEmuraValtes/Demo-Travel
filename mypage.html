@@ -31,17 +31,17 @@
 
       content.innerHTML = `
         <!-- プロフィールヘッダー -->
-        <div class="card" style="padding:24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-          <div style="width:64px;height:64px;border-radius:50%;background:var(--primary);color:white;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <div id="user-profile" class="card" style="padding:24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+          <div id="user-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--primary);color:white;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">
             ${u.name.charAt(0)}
           </div>
           <div>
-            <div style="font-size:22px;font-weight:700;color:var(--accent)">${u.name} 様</div>
-            <div style="font-size:13px;color:var(--gray)">${u.email}</div>
-            <div style="font-size:13px;color:var(--gray)">📞 ${u.phone}</div>
+            <div id="user-name" style="font-size:22px;font-weight:700;color:var(--accent)">${u.name} 様</div>
+            <div id="user-email" style="font-size:13px;color:var(--gray)">${u.email}</div>
+            <div id="user-phone" style="font-size:13px;color:var(--gray)">📞 ${u.phone}</div>
           </div>
           <div style="margin-left:auto">
-            <button class="btn btn-secondary btn-sm" onclick="App.logout()">ログアウト</button>
+            <button id="btn-logout" class="btn btn-secondary btn-sm" onclick="App.logout()">ログアウト</button>
           </div>
         </div>
 
@@ -146,9 +146,9 @@
               ${bookings.map(b => {
                 const hotel = App.getHotelById(b.hotelId);
                 const statusBadge = {
-                  confirmed: `<span class="badge badge-primary">予約済み</span>`,
-                  completed: `<span class="badge badge-success">完　了</span>`,
-                  cancelled: `<span class="badge badge-gray">キャンセル</span>`,
+                  confirmed: `<span class="badge badge-primary booking-status">予約済み</span>`,
+                  completed: `<span class="badge badge-success booking-status">完　了</span>`,
+                  cancelled: `<span class="badge badge-gray booking-status">キャンセル</span>`,
                 }[b.status] || "";
 
                 const today = new Date(); today.setHours(0,0,0,0);
@@ -156,16 +156,16 @@
                 const canCancel = b.status === "confirmed" && checkin > today;
 
                 return `
-                  <tr>
-                    <td style="font-size:12px;color:var(--primary);font-weight:600">${b.bookingNo}</td>
-                    <td><span class="hotel-link" onclick="window.open('hotel.html?id=${b.hotelId}','_blank')">${hotel?.name || "不明"}</span></td>
-                    <td style="white-space:nowrap;font-size:13px">${App.fmtDateSlash(b.checkin)}</td>
-                    <td style="text-align:center">${b.nights}泊</td>
-                    <td style="font-weight:700;white-space:nowrap">${App.fmtPrice(b.totalPrice)}</td>
+                  <tr data-booking-id="${b.id}" data-booking-status="${b.status}">
+                    <td class="booking-no" style="font-size:12px;color:var(--primary);font-weight:600">${b.bookingNo}</td>
+                    <td class="booking-hotel-name"><span class="hotel-link" onclick="window.open('hotel.html?id=${b.hotelId}','_blank')">${hotel?.name || "不明"}</span></td>
+                    <td class="booking-checkin" style="white-space:nowrap;font-size:13px">${App.fmtDateSlash(b.checkin)}</td>
+                    <td class="booking-nights" style="text-align:center">${b.nights}泊</td>
+                    <td class="booking-price" style="font-weight:700;white-space:nowrap">${App.fmtPrice(b.totalPrice)}</td>
                     <td>${statusBadge}</td>
                     <td>
                       ${canCancel
-                        ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking('${b.id}','${b.bookingNo}')">取消</button>`
+                        ? `<button class="btn btn-danger btn-sm" id="btn-cancel-${b.id}" data-booking-id="${b.id}" onclick="cancelBooking('${b.id}','${b.bookingNo}')">取消</button>`
                         : b.status === "confirmed"
                           ? `<span style="font-size:11px;color:var(--gray)">取消不可</span>`
                           : ""

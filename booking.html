@@ -74,7 +74,7 @@
       <div id="err-step1" class="alert alert-danger hidden"></div>
 
       <div style="text-align:right">
-        <button class="btn btn-primary" style="font-size:15px;padding:12px 36px" onclick="goToStep2()">
+        <button id="btn-confirm" class="btn btn-primary" style="font-size:15px;padding:12px 36px" onclick="goToStep2()">
           入力内容を確認する →
         </button>
       </div>
@@ -90,8 +90,8 @@
       <div id="err-step2" class="alert alert-danger hidden"></div>
 
       <div style="display:flex;gap:12px;justify-content:space-between">
-        <button class="btn btn-secondary" onclick="backToStep1()">← 入力内容を修正する</button>
-        <button class="btn btn-success" style="font-size:15px;padding:12px 36px" onclick="confirmBooking()">
+        <button id="btn-back" class="btn btn-secondary" onclick="backToStep1()">← 入力内容を修正する</button>
+        <button id="btn-complete" class="btn btn-success" style="font-size:15px;padding:12px 36px" onclick="confirmBooking()">
           予約を確定する ✔
         </button>
       </div>
@@ -203,19 +203,19 @@
       const nights = sp.nights || App.calcNights(sp.checkin, sp.checkout);
       const total  = sp.totalPrice || (bookingHotel.priceBase * nights);
       const rows = [
-        ["ホテル",        bookingHotel.name],
-        ["部屋タイプ",    sp.roomType || "スタンダードダブル"],
-        ["チェックイン",  App.fmtDateJP(sp.checkin)],
-        ["チェックアウト",App.fmtDateJP(sp.checkout)],
-        [`宿泊数 / 人数`, `${nights}泊 / 大人${sp.guests || 2}名`],
-        ["代表者氏名",    `${sei} ${mei}（${kanaSei} ${kanaMei}）`],
-        ["電話番号",      phone],
-        ["メールアドレス",email],
-        ...(special ? [["特別リクエスト", special]] : []),
-        ["合計金額",      App.fmtPrice(total)],
+        ["hotel",       "ホテル",        bookingHotel.name],
+        ["room-type",   "部屋タイプ",    sp.roomType || "スタンダードダブル"],
+        ["checkin",     "チェックイン",  App.fmtDateJP(sp.checkin)],
+        ["checkout",    "チェックアウト",App.fmtDateJP(sp.checkout)],
+        ["nights",      "宿泊数 / 人数", `${nights}泊 / 大人${sp.guests || 2}名`],
+        ["guest-name",  "代表者氏名",    `${sei} ${mei}（${kanaSei} ${kanaMei}）`],
+        ["phone",       "電話番号",      phone],
+        ["email",       "メールアドレス",email],
+        ...(special ? [["special", "特別リクエスト", special]] : []),
+        ["total",       "合計金額",      App.fmtPrice(total)],
       ];
       const tbody = document.getElementById("confirm-table");
-      tbody.innerHTML = rows.map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+      tbody.innerHTML = rows.map(([key,k,v]) => `<tr data-field="${key}"><td>${k}</td><td class="confirm-value">${v}</td></tr>`).join("");
 
       document.getElementById("step1").classList.add("hidden");
       document.getElementById("step2").classList.remove("hidden");

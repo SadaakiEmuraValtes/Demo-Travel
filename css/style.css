@@ -540,3 +540,80 @@ button, input, select, textarea { font-family: inherit; }
 .flex-1 { flex: 1; }
 .hidden { display: none !important; }
 .divider { border: none; border-top: 1px solid var(--gray-lt); margin: 20px 0; }
+
+/* ── カスタムカレンダーポップアップ ── */
+.cal-popup {
+  position: absolute;
+  background: white;
+  border: 1px solid var(--gray-bd);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  padding: 14px;
+  z-index: 10000;
+  min-width: 268px;
+  max-width: calc(100vw - 20px);
+  font-family: inherit;
+}
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--gray-bd);
+}
+.cal-header span { font-weight: 700; font-size: 14px; }
+.cal-nav {
+  background: none;
+  border: 1px solid var(--gray-bd);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--trans);
+}
+.cal-nav:hover { background: var(--light-bg); border-color: var(--primary); }
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 10px;
+}
+.cal-dow {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 0 5px;
+  color: var(--gray);
+}
+.cal-dow.cal-sun { color: var(--danger); }
+.cal-dow.cal-sat { color: var(--primary); }
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 50%;
+  min-height: 30px;
+  transition: background .1s;
+}
+.cal-day:hover:not(.cal-other) { background: var(--light-bg); }
+.cal-day.cal-today { font-weight: 700; color: var(--primary); border: 1.5px solid var(--primary); }
+.cal-day.cal-sel { background: var(--primary) !important; color: white !important; border-color: transparent; }
+.cal-day.cal-sun { color: var(--danger); }
+.cal-day.cal-sat { color: var(--primary); }
+.cal-day.cal-sel.cal-sun,
+.cal-day.cal-sel.cal-sat { color: white; }
+.cal-day.cal-other { visibility: hidden; pointer-events: none; }
+.cal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid var(--gray-bd);
+}
