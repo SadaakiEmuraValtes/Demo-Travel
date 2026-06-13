@@ -119,7 +119,6 @@
 
       const sp = App.loadSearchParams();
 
-      // 日付を反映（テキスト + ピッカー両方）
       if (sp.checkin) {
         document.getElementById("ds-checkin").value    = sp.checkin.replace(/-/g, "/");
         document.getElementById("ds-checkin-dp").value = sp.checkin;
@@ -129,6 +128,9 @@
         document.getElementById("ds-checkout-dp").value = sp.checkout;
       }
       document.getElementById("ds-guests").value = sp.guests || "2";
+
+      // 日程未選択でも部屋一覧を表示（空室・予約ボタンはブランク）
+      renderRoomTable(null, null, null, null, null);
 
       // 日程が既に指定されている場合は自動で空き確認を実行
       if (sp.checkin && sp.checkout) {
@@ -165,6 +167,82 @@
       else coG.classList.remove("has-error");
     }
 
+    function renderRoomTable(avail, ci, co, g, r) {
+      const hasDate = avail !== null;
+      document.getElementById("avail-placeholder").classList.add("hidden");
+      const result = document.getElementById("avail-result");
+      result.classList.remove("hidden");
+
+      const rooms = hasDate ? avail.rooms : ROOM_TYPES.map(rt => ({
+        type: rt.name,
+        price: Math.round(currentHotel.priceBase * rt.multiplier),
+        available: null
+      }));
+
+      const DOW_JP = ["日","月","火","水","木","金","土"];
+      let headerHtml = "";
+      if (hasDate) {
+        headerHtml = avail.blockedDays.length > 0
+          ? `<div class="alert alert-warn" style="margin-bottom:12px;font-size:13px">
+               ⚠️ 以下の日程が満室のため、この期間は予約できません。<br>
+               ${avail.blockedDays.map(d => {
+                 const dt = new Date(d + "T00:00:00");
+                 return `<strong>${dt.getMonth()+1}月${dt.getDate()}日（${DOW_JP[dt.getDay()]}）</strong>`;
+               }).join("、")}
+             </div>`
+          : `<div class="alert alert-success" style="margin-bottom:12px;font-size:13px">
+               ✅ ${App.fmtDateJP(ci)} → ${App.fmtDateJP(co)}<br>
+               ${nightsCount}泊 / 大人${g}名
+             </div>`;
+      }
+
+      result.innerHTML = `
+        ${headerHtml}
+        <div style="overflow-x:auto">
+          <table id="avail-rooms-table" style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead>
+              <tr>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:left">部屋タイプ</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">1泊</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">合計</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:center">空室</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px"></th>
+              </tr>
+            </thead>
+            <tbody id="avail-rooms-body">
+              ${rooms.map((rm, i) => {
+                const total = hasDate ? rm.price * nightsCount * r : null;
+                const safeType = rm.type.replace(/'/g,"\\'");
+                return `
+                  <tr data-room-type="${rm.type}" data-available="${rm.available}" style="background:${i%2===0?'white':'var(--gray-lt)'}">
+                    <td class="room-type" style="padding:8px 10px;font-weight:600;font-size:12px">${rm.type}</td>
+                    <td class="room-price" style="padding:8px 10px;text-align:right;color:var(--primary);font-weight:700">${App.fmtPrice(rm.price)}</td>
+                    <td class="room-total" style="padding:8px 10px;text-align:right;font-weight:700">${total !== null ? App.fmtPrice(total) : ""}</td>
+                    <td style="padding:8px 10px;text-align:center">
+                      ${hasDate ? `<span class="badge room-avail-badge ${rm.available?'badge-success':'badge-danger'}">${rm.available?'空あり':'満室'}</span>` : ""}
+                    </td>
+                    <td style="padding:8px 10px;text-align:center">
+                      ${hasDate
+                        ? (rm.available
+                            ? `<button class="btn btn-primary btn-sm btn-book-room" data-room-type="${rm.type}" onclick="selectRoom('${safeType}',${rm.price},${total},'${ci}','${co}',${g},${r})">予　約</button>`
+                            : `<span style="font-size:11px;color:var(--gray)">満室</span>`)
+                        : ""}
+                    </td>
+                  </tr>`;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>`;
+
+      if (hasDate) {
+        const sp = App.loadSearchParams();
+        sp.hotelId = currentHotel.id;
+        sp.checkin = ci; sp.checkout = co;
+        sp.guests = g;   sp.rooms = r;
+        App.saveSearchParams(sp);
+      }
+    }
+
     function checkAvailability(withLoading = true) {
       const ci = App.parseDateStr(document.getElementById("ds-checkin").value);
       const co = App.parseDateStr(document.getElementById("ds-checkout").value);
@@ -179,68 +257,7 @@
       const doRender = () => {
         nightsCount = App.calcNights(ci, co);
         const avail = App.checkAvailability(currentHotel.id, ci, co);
-
-        document.getElementById("avail-placeholder").classList.add("hidden");
-        const result = document.getElementById("avail-result");
-        result.classList.remove("hidden");
-
-        const DOW_JP = ["日","月","火","水","木","金","土"];
-
-        const blockedHtml = avail.blockedDays.length > 0
-          ? `<div class="alert alert-warn" style="margin-bottom:12px;font-size:13px">
-               ⚠️ 以下の日程が満室のため、この期間は予約できません。<br>
-               ${avail.blockedDays.map(d => {
-                 const dt = new Date(d + "T00:00:00");
-                 return `<strong>${dt.getMonth()+1}月${dt.getDate()}日（${DOW_JP[dt.getDay()]}）</strong>`;
-               }).join("、")}
-             </div>`
-          : `<div class="alert alert-success" style="margin-bottom:12px;font-size:13px">
-               ✅ ${App.fmtDateJP(ci)} → ${App.fmtDateJP(co)}<br>
-               ${nightsCount}泊 / 大人${g}名
-             </div>`;
-
-        result.innerHTML = `
-          ${blockedHtml}
-          <div style="overflow-x:auto">
-            <table id="avail-rooms-table" style="width:100%;border-collapse:collapse;font-size:13px">
-              <thead>
-                <tr>
-                  <th style="background:var(--accent);color:white;padding:8px 10px;text-align:left">部屋タイプ</th>
-                  <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">1泊</th>
-                  <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">合計</th>
-                  <th style="background:var(--accent);color:white;padding:8px 10px;text-align:center">空室</th>
-                  <th style="background:var(--accent);color:white;padding:8px 10px"></th>
-                </tr>
-              </thead>
-              <tbody id="avail-rooms-body">
-                ${avail.rooms.map((rm, i) => {
-                  const total = rm.price * nightsCount * r;
-                  const safeType = rm.type.replace(/'/g,"\\'");
-                  return `
-                    <tr data-room-type="${rm.type}" data-available="${rm.available}" style="background:${i%2===0?'white':'var(--gray-lt)'}">
-                      <td class="room-type" style="padding:8px 10px;font-weight:600;font-size:12px">${rm.type}</td>
-                      <td class="room-price" style="padding:8px 10px;text-align:right;color:var(--primary);font-weight:700">${App.fmtPrice(rm.price)}</td>
-                      <td class="room-total" style="padding:8px 10px;text-align:right;font-weight:700">${App.fmtPrice(total)}</td>
-                      <td style="padding:8px 10px;text-align:center">
-                        <span class="badge room-avail-badge ${rm.available?'badge-success':'badge-danger'}">${rm.available?'空あり':'満室'}</span>
-                      </td>
-                      <td style="padding:8px 10px;text-align:center">
-                        ${rm.available
-                          ? `<button class="btn btn-primary btn-sm btn-book-room" data-room-type="${rm.type}" onclick="selectRoom('${safeType}',${rm.price},${total},'${ci}','${co}',${g},${r})">予　約</button>`
-                          : `<span style="font-size:11px;color:var(--gray)">満室</span>`
-                        }
-                      </td>
-                    </tr>`;
-                }).join("")}
-              </tbody>
-            </table>
-          </div>`;
-
-        const sp = App.loadSearchParams();
-        sp.hotelId = currentHotel.id;
-        sp.checkin = ci; sp.checkout = co;
-        sp.guests = g;   sp.rooms = r;
-        App.saveSearchParams(sp);
+        renderRoomTable(avail, ci, co, g, r);
       };
 
       if (withLoading) {
