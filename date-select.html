@@ -216,8 +216,8 @@
                 return `
                   <tr data-room-type="${rm.type}" data-available="${rm.available}" style="background:${i%2===0?'white':'var(--gray-lt)'}">
                     <td class="room-type" style="padding:8px 10px;font-weight:600;font-size:12px">${rm.type}</td>
-                    <td class="room-price" style="padding:8px 10px;text-align:right;color:var(--primary);font-weight:700">${App.fmtPrice(rm.price)}</td>
-                    <td class="room-total" style="padding:8px 10px;text-align:right;font-weight:700">${total !== null ? App.fmtPrice(total) : ""}</td>
+                    <td class="room-price" style="padding:8px 10px;text-align:right;color:var(--primary);font-weight:700">${hasDate ? App.fmtPrice(rm.price) : "-円"}</td>
+                    <td class="room-total" style="padding:8px 10px;text-align:right;font-weight:700">${total !== null ? App.fmtPrice(total) : "-円"}</td>
                     <td style="padding:8px 10px;text-align:center">
                       ${hasDate ? `<span class="badge room-avail-badge ${rm.available?'badge-success':'badge-danger'}">${rm.available?'空あり':'満室'}</span>` : ""}
                     </td>
