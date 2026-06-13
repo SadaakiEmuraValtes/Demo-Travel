@@ -165,7 +165,7 @@
         </div>
         <div class="hotel-card-actions">
           <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" onclick="openDetail('${h.id}')">詳細を見る</button>
-          <button class="btn btn-primary btn-sm" onclick="bookHotel('${h.id}')">予約する</button>
+          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" onclick="bookHotel('${h.id}')">予約する</button>
         </div>
       `;
       return card;

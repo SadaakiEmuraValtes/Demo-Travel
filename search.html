@@ -308,7 +308,7 @@
         </div>
         <div class="hotel-card-actions">
           <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" onclick="window.open('hotel.html?id=${h.id}','_blank')">詳細 ↗</button>
-          <button class="btn btn-primary btn-sm" onclick="handleBook('${h.id}')">予 約</button>
+          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" onclick="handleBook('${h.id}')">予 約</button>
         </div>`;
       return div;
     }
@@ -338,7 +338,7 @@
         <div class="hli-actions">
           <div style="font-size:20px;font-weight:700;color:var(--primary)">${App.fmtPrice(h.priceBase)}<span style="font-size:11px;font-weight:400;color:var(--gray)">/泊〜</span></div>
           <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" style="width:100%" onclick="window.open('hotel.html?id=${h.id}','_blank')">詳細を見る ↗</button>
-          <button class="btn btn-primary btn-sm" style="width:100%" onclick="handleBook('${h.id}')">予　約</button>
+          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" style="width:100%" onclick="handleBook('${h.id}')">予　約</button>
           <div style="font-size:10px;color:var(--gray);text-align:center">${hasDate ? "日程確認→予約入力" : "日程選択→予約入力"}</div>
         </div>`;
       return div;
