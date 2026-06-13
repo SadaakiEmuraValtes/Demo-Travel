@@ -164,7 +164,7 @@
           <div class="hotel-card-price">${App.fmtPrice(h.priceBase)}<span>/泊〜</span></div>
         </div>
         <div class="hotel-card-actions">
-          <button class="btn btn-secondary btn-sm" onclick="openDetail('${h.id}')">詳細を見る</button>
+          <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" onclick="openDetail('${h.id}')">詳細を見る</button>
           <button class="btn btn-primary btn-sm" onclick="bookHotel('${h.id}')">予約する</button>
         </div>
       `;
