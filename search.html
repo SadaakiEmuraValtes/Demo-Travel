@@ -251,27 +251,29 @@
       }
       isLoading = true;
 
-      const container = document.getElementById("hotel-results");
-      if (displayedCount === 0 && currentView === "grid") {
-        container.className = "hotel-grid";
-      } else if (displayedCount === 0) {
-        container.className = "hotel-list";
-      }
-
-      remaining.forEach(h => {
-        if (currentView === "grid") {
-          container.appendChild(createGridCard(h));
-        } else {
-          container.appendChild(createListItem(h));
+      setTimeout(() => {
+        const container = document.getElementById("hotel-results");
+        if (displayedCount === 0 && currentView === "grid") {
+          container.className = "hotel-grid";
+        } else if (displayedCount === 0) {
+          container.className = "hotel-list";
         }
-      });
 
-      displayedCount += remaining.length;
-      isLoading = false;
+        remaining.forEach(h => {
+          if (currentView === "grid") {
+            container.appendChild(createGridCard(h));
+          } else {
+            container.appendChild(createListItem(h));
+          }
+        });
 
-      if (displayedCount >= filteredResults.length) {
-        document.getElementById("no-more").style.display = "block";
-      }
+        displayedCount += remaining.length;
+        isLoading = false;
+
+        if (displayedCount >= filteredResults.length) {
+          document.getElementById("no-more").style.display = "block";
+        }
+      }, 100);
     }
 
     function initInfiniteScroll() {
