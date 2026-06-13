@@ -219,14 +219,14 @@
                     <td class="room-price" style="padding:8px 10px;text-align:right;color:var(--primary);font-weight:700">${hasDate ? App.fmtPrice(rm.price) : "-円"}</td>
                     <td class="room-total" style="padding:8px 10px;text-align:right;font-weight:700">${total !== null ? App.fmtPrice(total) : "-円"}</td>
                     <td style="padding:8px 10px;text-align:center">
-                      ${hasDate ? `<span class="badge room-avail-badge ${rm.available?'badge-success':'badge-danger'}">${rm.available?'空あり':'満室'}</span>` : ""}
+                      ${hasDate ? `<span class="badge room-avail-badge ${rm.available?'badge-success':'badge-danger'}">${rm.available?'空あり':'満室'}</span>` : `<span class="room-avail-badge" style="color:var(--gray)">-</span>`}
                     </td>
                     <td style="padding:8px 10px;text-align:center">
                       ${hasDate
                         ? (rm.available
                             ? `<button class="btn btn-primary btn-sm btn-book-room" data-room-type="${rm.type}" onclick="selectRoom('${safeType}',${rm.price},${total},'${ci}','${co}',${g},${r})">予　約</button>`
                             : `<span style="font-size:11px;color:var(--gray)">満室</span>`)
-                        : ""}
+                        : `<span style="color:var(--gray)">-</span>`}
                     </td>
                   </tr>`;
               }).join("")}
