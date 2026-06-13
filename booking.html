@@ -259,10 +259,10 @@
       document.getElementById("complete-no").textContent = res.booking.bookingNo;
       document.getElementById("complete-summary").innerHTML = `
         <table class="confirm-table">
-          <tr><td>ホテル</td><td>${bookingHotel.name}</td></tr>
-          <tr><td>チェックイン</td><td>${App.fmtDateJP(sp.checkin)}</td></tr>
-          <tr><td>チェックアウト</td><td>${App.fmtDateJP(sp.checkout)}</td></tr>
-          <tr><td>合計金額</td><td>${App.fmtPrice(res.booking.totalPrice)}</td></tr>
+          <tr><td>ホテル</td><td id="complete-hotel">${bookingHotel.name}</td></tr>
+          <tr><td>チェックイン</td><td id="complete-checkin">${App.fmtDateJP(sp.checkin)}</td></tr>
+          <tr><td>チェックアウト</td><td id="complete-checkout">${App.fmtDateJP(sp.checkout)}</td></tr>
+          <tr><td>合計金額</td><td id="complete-total">${App.fmtPrice(res.booking.totalPrice)}</td></tr>
         </table>`;
 
       window.scrollTo(0,0);
