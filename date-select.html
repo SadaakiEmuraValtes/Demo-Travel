@@ -224,7 +224,7 @@
                     <td style="padding:8px 10px;text-align:center">
                       ${hasDate
                         ? (rm.available
-                            ? `<button class="btn btn-primary btn-sm btn-book-room" data-room-type="${rm.type}" onclick="selectRoom('${safeType}',${rm.price},${total},'${ci}','${co}',${g},${r})">予　約</button>`
+                            ? `<button id="btn-book-room-${rm.type.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm btn-book-room" data-room-type="${rm.type}" onclick="selectRoom('${safeType}',${rm.price},${total},'${ci}','${co}',${g},${r})">予　約</button>`
                             : `<span style="font-size:11px;color:var(--gray)">満室</span>`)
                         : `<span style="color:var(--gray)">-</span>`}
                     </td>
