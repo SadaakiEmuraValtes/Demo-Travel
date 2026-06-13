@@ -215,7 +215,7 @@
         ["total",       "合計金額",      App.fmtPrice(total)],
       ];
       const tbody = document.getElementById("confirm-table");
-      tbody.innerHTML = rows.map(([key,k,v]) => `<tr data-field="${key}"><td>${k}</td><td class="confirm-value">${v}</td></tr>`).join("");
+      tbody.innerHTML = rows.map(([key,k,v]) => `<tr data-field="${key}"><td>${k}</td><td id="confirm-${key}" class="confirm-value">${v}</td></tr>`).join("");
 
       document.getElementById("step1").classList.add("hidden");
       document.getElementById("step2").classList.remove("hidden");
