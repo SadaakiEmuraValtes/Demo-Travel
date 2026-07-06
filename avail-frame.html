@@ -38,18 +38,42 @@
       const DOW       = ["日","月","火","水","木","金","土"];
       const DOW_COLOR = { 0: "#DC2626", 6: "#0D9488" };
 
-      const rows = [days.slice(0, 7), days.slice(7, 14)];
+      // 日曜始まりになるよう先頭に空白スロットを追加
+      const leadingEmpties = days[0].dow; // 0=日 → 0個, 1=月 → 1個, ...
+      const sundayStart = new Date(days[0].date + "T00:00:00");
+      sundayStart.setDate(sundayStart.getDate() - leadingEmpties);
+
+      const allSlots = [];
+      for (let i = 0; i < leadingEmpties; i++) {
+        const d = new Date(sundayStart);
+        d.setDate(sundayStart.getDate() + i);
+        allSlots.push({ date: App.fmtDate(d), dow: d.getDay(), available: null, disabled: true });
+      }
+      allSlots.push(...days);
+      // 末尾を土曜まで埋める
+      while (allSlots.length % 7 !== 0) {
+        const last = new Date(allSlots[allSlots.length - 1].date + "T00:00:00");
+        last.setDate(last.getDate() + 1);
+        allSlots.push({ date: App.fmtDate(last), dow: last.getDay(), available: null, disabled: true });
+      }
+
+      // 7列ずつ週に分割
+      const weeks = [];
+      for (let i = 0; i < allSlots.length; i += 7) weeks.push(allSlots.slice(i, i + 7));
+
       let html = '<table class="avail-table">';
-      rows.forEach(week => {
+      weeks.forEach(week => {
         // 日付ヘッダー行
         html += "<tr>" + week.map(d => {
           const c   = DOW_COLOR[d.dow] || "inherit";
           const dt  = new Date(d.date + "T00:00:00");
-          return `<th>${dt.getMonth()+1}/${dt.getDate()}<br><span style="color:${c}">${DOW[d.dow]}</span></th>`;
+          const dim = d.disabled ? ' style="opacity:0.3"' : '';
+          return `<th${dim}>${dt.getMonth()+1}/${dt.getDate()}<br><span style="color:${c}">${DOW[d.dow]}</span></th>`;
         }).join("") + "</tr>";
 
         // 空き状況行
         html += "<tr>" + week.map(d => {
+          if (d.disabled) return `<td class="avail-ng" style="opacity:0.3">-</td>`;
           if (d.available) {
             return `<td class="avail-ok clickable" onclick="goBook('${d.date}')" title="${d.date} でチェックイン →日程選択へ">空あり</td>`;
           } else {
