@@ -11,45 +11,46 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <!-- ヒーロー -->
   <section class="hero">
     <h1>✈ TravelNest <span style="font-size:18px;font-weight:400;opacity:.8">Demo</span></h1>
-    <p>福岡・東京・名古屋・大阪・フィリピン　5エリア 260+ ホテル</p>
+    <p data-i18n-en="Fukuoka · Tokyo · Nagoya · Osaka · Philippines — 5 Regions, 260+ Hotels">福岡・東京・名古屋・大阪・フィリピン　5エリア 260+ ホテル</p>
 
     <div id="search-box" class="search-box">
       <div class="field">
-        <label>目的地・エリア</label>
+        <label data-i18n-en="Destination / Area">目的地・エリア</label>
         <select id="s-region">
-          <option value="all">すべてのエリア</option>
+          <option value="all" data-i18n-en="All Areas">すべてのエリア</option>
         </select>
       </div>
       <div class="field">
-        <label>チェックイン</label>
+        <label data-i18n-en="Check-in">チェックイン</label>
         <div class="date-input-wrap">
           <input type="text" id="s-checkin" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
           <div class="dp-btn-wrap" onclick="openDatePicker('s-checkin')">📅<input type="date" id="s-checkin-dp" tabindex="-1" onchange="syncFromPicker('s-checkin')"></div>
         </div>
       </div>
       <div class="field">
-        <label>チェックアウト</label>
+        <label data-i18n-en="Check-out">チェックアウト</label>
         <div class="date-input-wrap">
           <input type="text" id="s-checkout" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
           <div class="dp-btn-wrap" onclick="openDatePicker('s-checkout')">📅<input type="date" id="s-checkout-dp" tabindex="-1" onchange="syncFromPicker('s-checkout')"></div>
         </div>
       </div>
       <div class="field" style="max-width:100px">
-        <label>人数</label>
+        <label data-i18n-en="Guests">人数</label>
         <select id="s-guests">
-          <option value="1">1名</option>
-          <option value="2" selected>2名</option>
-          <option value="3">3名</option>
-          <option value="4">4名</option>
-          <option value="5">5名以上</option>
+          <option value="1" data-i18n-en="1 guest">1名</option>
+          <option value="2" selected data-i18n-en="2 guests">2名</option>
+          <option value="3" data-i18n-en="3 guests">3名</option>
+          <option value="4" data-i18n-en="4 guests">4名</option>
+          <option value="5" data-i18n-en="5+ guests">5名以上</option>
         </select>
       </div>
-      <button id="btn-search" class="btn-search" onclick="doSearch()">🔍 検索</button>
+      <button id="btn-search" class="btn-search" onclick="doSearch()" data-i18n-en="🔍 Search">🔍 検索</button>
     </div>
   </section>
 
@@ -57,24 +58,24 @@
   <div class="page-wrap" style="margin-top:32px;">
 
     <!-- 地域ピックアップ -->
-    <h2 class="section-title">エリアから探す</h2>
+    <h2 class="section-title" data-i18n-en="Browse by Area">エリアから探す</h2>
     <div id="region-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:40px;"></div>
 
     <!-- おすすめホテル -->
-    <h2 class="section-title">おすすめホテル</h2>
+    <h2 class="section-title" data-i18n-en="Featured Hotels">おすすめホテル</h2>
     <div id="featured-hotels" class="hotel-grid"></div>
 
     <div style="text-align:center;margin-top:28px;">
-      <a href="search.html" class="btn btn-primary" style="font-size:15px;padding:12px 36px;">すべてのホテルを見る →</a>
+      <a href="search.html" class="btn btn-primary" style="font-size:15px;padding:12px 36px;" data-i18n-en="View All Hotels →">すべてのホテルを見る →</a>
     </div>
 
     <!-- デモ案内 -->
     <div class="alert alert-info" style="margin-top:40px;">
       <div>
-        <strong>🧪 デモサイトの操作方法</strong><br>
-        テストユーザーでログインしてすべての機能をお試しいただけます。<br>
-        ホテルの予約・キャンセル・お気に入り登録など、実際の操作感を確認できます。
-        <a href="help.html#accounts" style="margin-left:8px;">テストアカウント一覧 →</a>
+        <strong data-i18n-en="🧪 How to Use This Demo">🧪 デモサイトの操作方法</strong><br>
+        <span data-i18n-en="Log in with a test account to try all features.">テストユーザーでログインしてすべての機能をお試しいただけます。</span><br>
+        <span data-i18n-en="Try booking, cancelling, and adding hotels to your favourites.">ホテルの予約・キャンセル・お気に入り登録など、実際の操作感を確認できます。</span>
+        <a href="help.html#accounts" style="margin-left:8px;" data-i18n-en="Test Accounts →">テストアカウント一覧 →</a>
       </div>
     </div>
   </div>
@@ -116,13 +117,13 @@
         card.innerHTML = `
           <div style="font-size:40px;margin-bottom:8px;">${r.emoji}</div>
           <div style="font-size:18px;font-weight:700;margin-bottom:4px;">${r.name}</div>
-          <div style="font-size:13px;opacity:.8">${count}ホテル</div>
+          <div style="font-size:13px;opacity:.8">${I18n.t(`${count}ホテル`,`${count} hotels`)}</div>
         `;
         card.onmouseover = () => { card.style.transform = "translateY(-4px)"; card.style.boxShadow = "0 8px 24px rgba(0,0,0,.25)"; };
         card.onmouseout  = () => { card.style.transform = ""; card.style.boxShadow = "0 4px 14px rgba(0,0,0,.15)"; };
         card.onclick = () => {
           App.saveSearchParams({ region: r.id });
-          window.location.href = "search.html";
+          I18n.go("search.html");
         };
         container.appendChild(card);
       });
@@ -158,21 +159,21 @@
           <div class="hotel-card-region">📍 ${App.regionName(h.region)}</div>
           <div class="hotel-stars">${App.starsHtml(h.stars)}</div>
           <div class="facility-tags" style="margin:4px 0">
-            ${h.facilities.slice(0,3).map(f=>`<span class="facility-tag">${f}</span>`).join("")}
+            ${h.facilities.slice(0,3).map(f=>`<span class="facility-tag">${I18n.tFacility(f)}</span>`).join("")}
           </div>
           <p style="font-size:12px;color:var(--gray);flex:1">${h.desc}</p>
-          <div class="hotel-card-price">${App.fmtPrice(h.priceBase)}<span>/泊〜</span></div>
+          <div class="hotel-card-price">${App.fmtPrice(h.priceBase)}<span>${I18n.t("/泊〜","/ night~")}</span></div>
         </div>
         <div class="hotel-card-actions">
-          <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" onclick="openDetail('${h.id}')">詳細を見る</button>
-          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" onclick="bookHotel('${h.id}')">予約する</button>
+          <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" onclick="openDetail('${h.id}')">${I18n.t("詳細を見る","View Details")}</button>
+          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" onclick="bookHotel('${h.id}')">${I18n.t("予約する","Book")}</button>
         </div>
       `;
       return card;
     }
 
     function openDetail(hotelId) {
-      window.open(`hotel.html?id=${hotelId}`, "_blank");
+      I18n.open(`hotel.html?id=${hotelId}`, "_blank");
     }
 
     function bookHotel(hotelId) {
@@ -186,7 +187,7 @@
       if (ci) sp.checkin  = ci;
       if (co) sp.checkout = co;
       App.saveSearchParams(sp);
-      window.location.href = `date-select.html?hotelId=${hotelId}`;
+      I18n.go(`date-select.html?hotelId=${hotelId}`);
     }
 
     function doSearch() {
@@ -195,10 +196,10 @@
       const checkout = App.parseDateStr(document.getElementById("s-checkout").value);
       const guests   = document.getElementById("s-guests").value;
       App.saveSearchParams({ region, checkin, checkout, guests });
-      App.showLoading("ホテルを検索中...");
+      App.showLoading(I18n.t("ホテルを検索中...","Searching for hotels..."));
       setTimeout(() => {
         App.hideLoading();
-        window.location.href = "search.html";
+        I18n.go("search.html");
       }, 3000 + Math.random() * 2000);
     }
   </script>

@@ -10,6 +10,7 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <div class="page-wrap" style="margin-top:80px">
@@ -36,19 +37,19 @@
             ${u.name.charAt(0)}
           </div>
           <div>
-            <div id="user-name" style="font-size:22px;font-weight:700;color:var(--accent)">${u.name} 様</div>
+            <div id="user-name" style="font-size:22px;font-weight:700;color:var(--accent)">${u.name} ${I18n.t("様","")}</div>
             <div id="user-email" style="font-size:13px;color:var(--gray)">${u.email}</div>
             <div id="user-phone" style="font-size:13px;color:var(--gray)">📞 ${u.phone}</div>
           </div>
           <div style="margin-left:auto">
-            <button id="btn-logout" class="btn btn-secondary btn-sm" onclick="App.logout()">ログアウト</button>
+            <button id="btn-logout" class="btn btn-secondary btn-sm" onclick="App.logout()">${I18n.t("ログアウト","Log Out")}</button>
           </div>
         </div>
 
         <!-- タブ -->
         <div style="display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--gray-bd)">
-          <button class="tab-btn active" id="tab-bookings" onclick="switchTab('bookings')">📋 予約履歴</button>
-          <button class="tab-btn" id="tab-favorites" onclick="switchTab('favorites')">❤️ お気に入り</button>
+          <button class="tab-btn active" id="tab-bookings" onclick="switchTab('bookings')">${I18n.t("📋 予約履歴","📋 Booking History")}</button>
+          <button class="tab-btn" id="tab-favorites" onclick="switchTab('favorites')">${I18n.t("❤️ お気に入り","❤️ Favourites")}</button>
         </div>
 
         <!-- 予約履歴 -->
@@ -92,10 +93,10 @@
 
       // タブフィルター
       const filters = [
-        { key: "all",       label: `すべて (${bookings.length})` },
-        { key: "confirmed", label: `予約済み (${bookings.filter(b=>b.status==="confirmed").length})` },
-        { key: "completed", label: `完了 (${bookings.filter(b=>b.status==="completed").length})` },
-        { key: "cancelled", label: `キャンセル (${bookings.filter(b=>b.status==="cancelled").length})` },
+        { key: "all",       label: I18n.t(`すべて (${bookings.length})`,`All (${bookings.length})`) },
+        { key: "confirmed", label: I18n.t(`予約済み (${bookings.filter(b=>b.status==="confirmed").length})`,`Confirmed (${bookings.filter(b=>b.status==="confirmed").length})`) },
+        { key: "completed", label: I18n.t(`完了 (${bookings.filter(b=>b.status==="completed").length})`,`Completed (${bookings.filter(b=>b.status==="completed").length})`) },
+        { key: "cancelled", label: I18n.t(`キャンセル (${bookings.filter(b=>b.status==="cancelled").length})`,`Cancelled (${bookings.filter(b=>b.status==="cancelled").length})`) },
       ];
 
       pane.innerHTML = `
@@ -119,7 +120,7 @@
 
       const list = document.getElementById("booking-list");
       if (bookings.length === 0) {
-        list.innerHTML = `<div class="alert alert-info">該当する予約がありません。</div>`; return;
+        list.innerHTML = `<div class="alert alert-info">${I18n.t("該当する予約がありません。","No bookings found.")}</div>`; return;
       }
 
       // ランダム順（毎回シャッフル）
@@ -133,12 +134,12 @@
           <table class="bookings-table">
             <thead>
               <tr>
-                <th>予約番号</th>
-                <th>ホテル名</th>
-                <th>チェックイン</th>
-                <th>泊数</th>
-                <th>合計</th>
-                <th>ステータス</th>
+                <th>${I18n.t("予約番号","Booking No.")}</th>
+                <th>${I18n.t("ホテル名","Hotel")}</th>
+                <th>${I18n.t("チェックイン","Check-in")}</th>
+                <th>${I18n.t("泊数","Nights")}</th>
+                <th>${I18n.t("合計","Total")}</th>
+                <th>${I18n.t("ステータス","Status")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -146,9 +147,9 @@
               ${bookings.map(b => {
                 const hotel = App.getHotelById(b.hotelId);
                 const statusBadge = {
-                  confirmed: `<span class="badge badge-primary booking-status">予約済み</span>`,
-                  completed: `<span class="badge badge-success booking-status">完　了</span>`,
-                  cancelled: `<span class="badge badge-gray booking-status">キャンセル</span>`,
+                  confirmed: `<span class="badge badge-primary booking-status">${I18n.t("予約済み","Confirmed")}</span>`,
+                  completed: `<span class="badge badge-success booking-status">${I18n.t("完　了","Completed")}</span>`,
+                  cancelled: `<span class="badge badge-gray booking-status">${I18n.t("キャンセル","Cancelled")}</span>`,
                 }[b.status] || "";
 
                 const today = new Date(); today.setHours(0,0,0,0);
@@ -158,16 +159,16 @@
                 return `
                   <tr data-booking-id="${b.id}" data-booking-status="${b.status}">
                     <td class="booking-no" style="font-size:12px;color:var(--primary);font-weight:600">${b.bookingNo}</td>
-                    <td class="booking-hotel-name"><span class="hotel-link" onclick="window.open('hotel.html?id=${b.hotelId}','_blank')">${hotel?.name || "不明"}</span></td>
+                    <td class="booking-hotel-name"><span class="hotel-link" onclick="I18n.open('hotel.html?id=${b.hotelId}','_blank')">${hotel?.name || I18n.t("不明","Unknown")}</span></td>
                     <td class="booking-checkin" style="white-space:nowrap;font-size:13px">${App.fmtDateSlash(b.checkin)}</td>
-                    <td class="booking-nights" style="text-align:center">${b.nights}泊</td>
+                    <td class="booking-nights" style="text-align:center">${I18n.t(`${b.nights}泊`,`${b.nights}`)}</td>
                     <td class="booking-price" style="font-weight:700;white-space:nowrap">${App.fmtPrice(b.totalPrice)}</td>
                     <td>${statusBadge}</td>
                     <td>
                       ${canCancel
-                        ? `<button class="btn btn-danger btn-sm" id="btn-cancel-${b.id}" data-booking-id="${b.id}" onclick="cancelBooking('${b.id}','${b.bookingNo}')">取消</button>`
+                        ? `<button class="btn btn-danger btn-sm" id="btn-cancel-${b.id}" data-booking-id="${b.id}" onclick="cancelBooking('${b.id}','${b.bookingNo}')">${I18n.t("取消","Cancel")}</button>`
                         : b.status === "confirmed"
-                          ? `<span style="font-size:11px;color:var(--gray)">取消不可</span>`
+                          ? `<span style="font-size:11px;color:var(--gray)">${I18n.t("取消不可","No cancel")}</span>`
                           : ""
                       }
                     </td>
@@ -179,10 +180,10 @@
     }
 
     function cancelBooking(id, no) {
-      if (!confirm(`予約番号 ${no} をキャンセルしますか？\nこの操作は取り消せません。`)) return;
+      if (!confirm(I18n.t(`予約番号 ${no} をキャンセルしますか？\nこの操作は取り消せません。`,`Cancel booking ${no}?\nThis action cannot be undone.`))) return;
       const res = App.cancelBooking(id);
       if (res.ok) {
-        App.showToast("予約をキャンセルしました", "success");
+        App.showToast(I18n.t("予約をキャンセルしました","Booking cancelled."), "success");
         renderBookings();
       } else {
         App.showToast(res.msg, "error");
@@ -196,9 +197,9 @@
       if (hotels.length === 0) {
         pane.innerHTML = `
           <div class="alert alert-info">
-            まだお気に入りがありません。<br>
-            ホテル詳細画面の「♡ お気に入り」ボタンで追加できます。<br>
-            <a href="search.html" class="btn btn-primary btn-sm" style="margin-top:10px;display:inline-flex">ホテルを探す</a>
+            ${I18n.t("まだお気に入りがありません。","No favourites yet.")}<br>
+            ${I18n.t("ホテル詳細画面の「♡ お気に入り」ボタンで追加できます。","Click the \"♡ Favorite\" button on any hotel details page to add one.")}<br>
+            <a href="${I18n.urlWith('search.html')}" class="btn btn-primary btn-sm" style="margin-top:10px;display:inline-flex">${I18n.t("ホテルを探す","Find Hotels")}</a>
           </div>`;
         return;
       }
@@ -220,8 +221,8 @@
             <div class="hotel-card-price">${App.fmtPrice(h.priceBase)}<span>/泊〜</span></div>
           </div>
           <div class="hotel-card-actions">
-            <button class="btn btn-secondary btn-sm" onclick="window.open('hotel.html?id=${h.id}','_blank')">詳細 ↗</button>
-            <button class="btn btn-danger btn-sm" onclick="removeFav('${h.id}',this)">♥ 解除</button>
+            <button class="btn btn-secondary btn-sm" onclick="I18n.open('hotel.html?id=${h.id}','_blank')">${I18n.t("詳細 ↗","Details ↗")}</button>
+            <button class="btn btn-danger btn-sm" onclick="removeFav('${h.id}',this)">${I18n.t("♥ 解除","♥ Remove")}</button>
           </div>`;
         grid.appendChild(card);
       });
@@ -229,7 +230,7 @@
 
     function removeFav(hotelId, btn) {
       App.toggleFavorite(hotelId);
-      App.showToast("お気に入りを解除しました", "info");
+      App.showToast(I18n.t("お気に入りを解除しました","Removed from favourites."), "info");
       renderFavorites();
     }
   </script>

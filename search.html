@@ -10,87 +10,88 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <div class="page-wrap" style="margin-top:80px">
-    <div class="page-title">🔍 ホテル検索</div>
-    <div class="page-subtitle">ゲスト（未ログイン）でも検索・詳細閲覧ができます</div>
+    <div class="page-title" data-i18n-en="🔍 Hotel Search">🔍 ホテル検索</div>
+    <div class="page-subtitle" data-i18n-en="Search and browse hotels without logging in">ゲスト（未ログイン）でも検索・詳細閲覧ができます</div>
 
     <!-- 検索フォーム -->
     <div class="card" style="padding:20px;margin-bottom:20px;">
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
         <div class="form-group flex-1" style="min-width:130px">
-          <label>エリア</label>
-          <select id="f-region"><option value="all">すべてのエリア</option></select>
+          <label data-i18n-en="Area">エリア</label>
+          <select id="f-region"><option value="all" data-i18n-en="All Areas">すべてのエリア</option></select>
         </div>
         <div class="form-group" style="min-width:160px">
-          <label>チェックイン</label>
+          <label data-i18n-en="Check-in">チェックイン</label>
           <div class="date-input-wrap">
             <input type="text" id="f-checkin" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
             <div class="dp-btn-wrap" onclick="openDatePicker('f-checkin')">📅<input type="date" id="f-checkin-dp" tabindex="-1" onchange="syncFromPicker('f-checkin')"></div>
           </div>
         </div>
         <div class="form-group" style="min-width:160px">
-          <label>チェックアウト</label>
+          <label data-i18n-en="Check-out">チェックアウト</label>
           <div class="date-input-wrap">
             <input type="text" id="f-checkout" placeholder="yyyy/mm/dd" maxlength="10" oninput="autoFormatDate(this)">
             <div class="dp-btn-wrap" onclick="openDatePicker('f-checkout')">📅<input type="date" id="f-checkout-dp" tabindex="-1" onchange="syncFromPicker('f-checkout')"></div>
           </div>
         </div>
         <div class="form-group" style="max-width:90px">
-          <label>人数</label>
+          <label data-i18n-en="Guests">人数</label>
           <select id="f-guests">
-            <option value="1">1名</option>
-            <option value="2" selected>2名</option>
-            <option value="3">3名</option>
-            <option value="4">4名</option>
+            <option value="1" data-i18n-en="1 guest">1名</option>
+            <option value="2" selected data-i18n-en="2 guests">2名</option>
+            <option value="3" data-i18n-en="3 guests">3名</option>
+            <option value="4" data-i18n-en="4 guests">4名</option>
           </select>
         </div>
         <div class="form-group flex-1" style="min-width:160px">
-          <label>キーワード</label>
-          <input type="text" id="f-keyword" placeholder="ホテル名・施設など">
+          <label data-i18n-en="Keyword">キーワード</label>
+          <input type="text" id="f-keyword" placeholder="ホテル名・施設など" data-i18n-ph-en="Hotel name, facilities, etc.">
         </div>
-        <button class="btn btn-primary" onclick="doSearch(true)">🔍 検索</button>
+        <button class="btn btn-primary" onclick="doSearch(true)" data-i18n-en="🔍 Search">🔍 検索</button>
       </div>
-      <div id="date-warn" class="alert alert-warn hidden" style="margin-top:10px;margin-bottom:0">
+      <div id="date-warn" class="alert alert-warn hidden" style="margin-top:10px;margin-bottom:0" data-i18n-en="⚠️ Check-in must be the day after the booking date or later">
         ⚠️ チェックインは予約日の翌日以降のみ選択できます
       </div>
     </div>
 
     <!-- フィルター・ソートバー -->
     <div class="filter-bar">
-      <label>絞り込み：</label>
+      <label data-i18n-en="Filter:">絞り込み：</label>
       <select id="filt-stars" onchange="applyFilters()">
-        <option value="0">★すべて</option>
+        <option value="0" data-i18n-en="★ All">★すべて</option>
         <option value="5">★5</option>
-        <option value="4">★4以上</option>
-        <option value="3">★3以上</option>
+        <option value="4" data-i18n-en="★4+">★4以上</option>
+        <option value="3" data-i18n-en="★3+">★3以上</option>
       </select>
       <select id="filt-price" onchange="applyFilters()">
-        <option value="0">料金：すべて</option>
+        <option value="0" data-i18n-en="Price: All">料金：すべて</option>
         <option value="10000">〜¥10,000</option>
         <option value="20000">〜¥20,000</option>
         <option value="50000">〜¥50,000</option>
       </select>
       <select id="filt-facility" onchange="applyFilters()">
-        <option value="">施設：すべて</option>
+        <option value="" data-i18n-en="Facility: All">施設：すべて</option>
         <option value="WiFi">WiFi</option>
-        <option value="朝食">朝食</option>
-        <option value="プール">プール</option>
-        <option value="スパ">スパ</option>
-        <option value="駐車場">駐車場</option>
-        <option value="温泉">温泉・大浴場</option>
+        <option value="朝食" data-i18n-en="Breakfast">朝食</option>
+        <option value="プール" data-i18n-en="Pool">プール</option>
+        <option value="スパ" data-i18n-en="Spa">スパ</option>
+        <option value="駐車場" data-i18n-en="Parking">駐車場</option>
+        <option value="温泉" data-i18n-en="Hot Spring">温泉・大浴場</option>
       </select>
       <select id="filt-sort" onchange="applyFilters()">
-        <option value="recommend">おすすめ順</option>
-        <option value="price_asc">料金：安い順</option>
-        <option value="price_desc">料金：高い順</option>
-        <option value="stars_desc">評価：高い順</option>
+        <option value="recommend" data-i18n-en="Recommended">おすすめ順</option>
+        <option value="price_asc" data-i18n-en="Price: Low to High">料金：安い順</option>
+        <option value="price_desc" data-i18n-en="Price: High to Low">料金：高い順</option>
+        <option value="stars_desc" data-i18n-en="Rating: High to Low">評価：高い順</option>
       </select>
       <label style="margin-left:auto">
         <select id="view-mode" onchange="switchView(this.value)">
-          <option value="grid">🔲 グリッド</option>
-          <option value="list">📋 リスト</option>
+          <option value="grid" data-i18n-en="🔲 Grid">🔲 グリッド</option>
+          <option value="list" data-i18n-en="📋 List">📋 リスト</option>
         </select>
       </label>
       <span class="result-count" id="result-count"></span>
@@ -105,7 +106,7 @@
     <div id="loading-indicator" class="loading-spinner hidden">
       <div class="spinner"></div><span>次の5件を読み込んでいます…</span>
     </div>
-    <div id="no-more" class="text-center" style="padding:20px;color:var(--gray);font-size:13px;display:none;">
+    <div id="no-more" class="text-center" style="padding:20px;color:var(--gray);font-size:13px;display:none;" data-i18n-en="─ All results displayed ─">
       ─ 以上で全件表示しました ─
     </div>
   </div>
@@ -227,7 +228,7 @@
       if (sort === "stars_desc")  filteredResults.sort((a,b) => b.stars - a.stars);
       if (sort === "recommend")   filteredResults.sort((a,b) => b.stars - a.stars || a.priceBase - b.priceBase);
 
-      document.getElementById("result-count").textContent = `${filteredResults.length}件`;
+      document.getElementById("result-count").textContent = I18n.t(`${filteredResults.length}件`,`${filteredResults.length} hotels found`);
       displayedCount = 0;
       document.getElementById("hotel-results").innerHTML = "";
       document.getElementById("no-more").style.display = "none";
@@ -301,14 +302,14 @@
           <div class="hotel-card-region">📍 ${App.regionName(h.region)}</div>
           <div class="hotel-stars" style="font-size:12px">${App.starsHtml(h.stars)}</div>
           <div class="facility-tags" style="margin:4px 0">
-            ${h.facilities.slice(0,3).map(f=>`<span class="facility-tag">${f}</span>`).join("")}
+            ${h.facilities.slice(0,3).map(f=>`<span class="facility-tag">${I18n.tFacility(f)}</span>`).join("")}
           </div>
           <p style="font-size:11px;color:var(--gray);flex:1;line-clamp:2;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden">${h.desc}</p>
-          <div class="hotel-card-price" style="margin-top:8px">${App.fmtPrice(h.priceBase)}<span>/泊〜</span></div>
+          <div class="hotel-card-price" style="margin-top:8px">${App.fmtPrice(h.priceBase)}<span>${I18n.t("/泊〜","/ night~")}</span></div>
         </div>
         <div class="hotel-card-actions">
-          <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" onclick="window.open('hotel.html?id=${h.id}','_blank')">詳細 ↗</button>
-          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" onclick="handleBook('${h.id}')">予 約</button>
+          <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" onclick="I18n.open('hotel.html?id=${h.id}','_blank')">${I18n.t("詳細 ↗","Details ↗")}</button>
+          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" onclick="handleBook('${h.id}')">${I18n.t("予 約","Book")}</button>
         </div>`;
       return div;
     }
@@ -332,14 +333,14 @@
           <div class="hotel-stars" style="font-size:12px;margin:3px 0">${App.starsHtml(h.stars)}</div>
           <p style="font-size:13px;color:var(--gray);margin:4px 0">${h.desc}</p>
           <div class="facility-tags">
-            ${h.facilities.map(f=>`<span class="facility-tag">${f}</span>`).join("")}
+            ${h.facilities.map(f=>`<span class="facility-tag">${I18n.tFacility(f)}</span>`).join("")}
           </div>
         </div>
         <div class="hli-actions">
-          <div style="font-size:20px;font-weight:700;color:var(--primary)">${App.fmtPrice(h.priceBase)}<span style="font-size:11px;font-weight:400;color:var(--gray)">/泊〜</span></div>
-          <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" style="width:100%" onclick="window.open('hotel.html?id=${h.id}','_blank')">詳細を見る ↗</button>
-          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" style="width:100%" onclick="handleBook('${h.id}')">予　約</button>
-          <div style="font-size:10px;color:var(--gray);text-align:center">${hasDate ? "日程確認→予約入力" : "日程選択→予約入力"}</div>
+          <div style="font-size:20px;font-weight:700;color:var(--primary)">${App.fmtPrice(h.priceBase)}<span style="font-size:11px;font-weight:400;color:var(--gray)">${I18n.t("/泊〜","/ night~")}</span></div>
+          <button id="btn-detail-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-secondary btn-sm" style="width:100%" onclick="I18n.open('hotel.html?id=${h.id}','_blank')">${I18n.t("詳細を見る ↗","View Details ↗")}</button>
+          <button id="btn-book-${h.name.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm" style="width:100%" onclick="handleBook('${h.id}')">${I18n.t("予　約","Book")}</button>
+          <div style="font-size:10px;color:var(--gray);text-align:center">${hasDate ? I18n.t("日程確認→予約入力","Confirm dates → Book") : I18n.t("日程選択→予約入力","Select dates → Book")}</div>
         </div>`;
       return div;
     }
@@ -349,7 +350,7 @@
       const sp = App.loadSearchParams();
       sp.hotelId = hotelId;
       App.saveSearchParams(sp);
-      window.location.href = `date-select.html?hotelId=${hotelId}`;
+      I18n.go(`date-select.html?hotelId=${hotelId}`);
     }
   </script>
 </body>

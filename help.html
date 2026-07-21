@@ -18,44 +18,43 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <div class="page-wrap" style="margin-top:80px;max-width:860px">
-    <div class="page-title">ヘルプ・よくある質問</div>
-    <div class="page-subtitle">TravelNest デモサイトの使い方・テスト方法をご案内します</div>
+    <div class="page-title" data-i18n-en="Help &amp; FAQ">ヘルプ・よくある質問</div>
+    <div class="page-subtitle" data-i18n-en="How to use and test the TravelNest demo site">TravelNest デモサイトの使い方・テスト方法をご案内します</div>
 
     <!-- デモサイト説明 -->
     <div class="alert alert-warn" style="margin-bottom:28px;font-size:14px">
       <div>
-        ⚠️ <strong>デモサイトについて</strong><br>
-        本サイトは株式会社バルテスのシステムテスト・デモ目的で作成された<strong>架空のトラベル予約サービス</strong>です。
-        掲載されているホテル情報・料金・予約内容はすべてフィクションであり、
-        実際の予約・決済・個人情報の登録は行われません。
+        ⚠️ <strong data-i18n-en="About This Demo Site">デモサイトについて</strong><br>
+        <span data-i18n-en="This site is a fictitious travel booking service created by Valtes Inc. for system testing and demonstration purposes. All hotel information, prices, and booking contents are fictional, and no actual reservations, payments, or personal data registrations are made.">本サイトは株式会社バルテスのシステムテスト・デモ目的で作成された<strong>架空のトラベル予約サービス</strong>です。掲載されているホテル情報・料金・予約内容はすべてフィクションであり、実際の予約・決済・個人情報の登録は行われません。</span>
       </div>
     </div>
 
     <!-- テストアカウント -->
     <div class="card" style="margin-bottom:28px">
       <div style="background:var(--primary);color:white;padding:16px 20px;border-radius:8px 8px 0 0">
-        <h2 style="font-size:18px;margin:0" id="accounts">🧪 テストアカウント一覧</h2>
+        <h2 style="font-size:18px;margin:0" id="accounts" data-i18n-en="🧪 Test Account List">🧪 テストアカウント一覧</h2>
       </div>
       <div style="padding:20px;overflow-x:auto">
-        <p style="font-size:13px;color:var(--gray);margin-bottom:14px">
+        <p style="font-size:13px;color:var(--gray);margin-bottom:14px" data-i18n-en="Log in with the accounts below to try booking, cancellation, favourites and other features.">
           以下のアカウントでログインして、予約・キャンセル・お気に入り等の機能をお試しいただけます。
         </p>
         <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:600px">
           <thead>
             <tr>
-              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left">名前</th>
-              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left">メールアドレス</th>
-              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left">パスワード</th>
-              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left">特徴</th>
+              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left" data-i18n-en="Name">名前</th>
+              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left" data-i18n-en="Email">メールアドレス</th>
+              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left" data-i18n-en="Password">パスワード</th>
+              <th style="background:var(--accent);color:white;padding:10px 12px;text-align:left" data-i18n-en="Notes">特徴</th>
             </tr>
           </thead>
           <tbody id="account-table"></tbody>
         </table>
         <div style="margin-top:14px;text-align:right">
-          <a href="login.html" class="btn btn-primary btn-sm">ログイン画面へ →</a>
+          <a href="login.html" class="btn btn-primary btn-sm" data-i18n-en="Go to Log In →">ログイン画面へ →</a>
         </div>
       </div>
     </div>
@@ -63,7 +62,7 @@
     <!-- バルテスホテル情報 -->
     <div class="card" style="margin-bottom:28px">
       <div style="background:var(--accent);color:white;padding:16px 20px;border-radius:8px 8px 0 0">
-        <h2 style="font-size:18px;margin:0">🏨 バルテスシリーズホテル（テストデータ）</h2>
+        <h2 style="font-size:18px;margin:0" data-i18n-en="🏨 Valtes Series Hotels (Test Data)">🏨 バルテスシリーズホテル（テストデータ）</h2>
       </div>
       <div style="padding:20px;overflow-x:auto">
         <p style="font-size:13px;color:var(--gray);margin-bottom:14px">
@@ -83,7 +82,7 @@
     </div>
 
     <!-- FAQ -->
-    <h2 class="section-title sm" style="margin-bottom:16px">よくある質問</h2>
+    <h2 class="section-title sm" style="margin-bottom:16px" data-i18n-en="Frequently Asked Questions">よくある質問</h2>
     <div id="faq-list"></div>
 
     <!-- 機能一覧 -->
@@ -95,7 +94,7 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      buildPage({ title: "ヘルプ" });
+      buildPage({ title: I18n.t("ヘルプ","Help") });
       buildAccountTable();
       buildValtesTable();
       buildFAQ();
@@ -135,7 +134,9 @@
     }
 
     function buildValtesTable() {
-      const DOW = ["日","月","火","水","木","金","土"];
+      const DOW = I18n.isEN()
+        ? ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+        : ["日","月","火","水","木","金","土"];
       const valtesHotels = HOTELS.filter(h => h.name.includes("バルテス"));
       const tbody = document.getElementById("valtes-table");
       valtesHotels.forEach((h, i) => {
@@ -146,11 +147,11 @@
         tr.style.background = i % 2 === 0 ? "white" : "var(--gray-lt)";
         tr.innerHTML = `
           <td style="padding:10px 12px;font-weight:600">
-            <span onclick="window.open('hotel.html?id=${h.id}','_blank')" style="cursor:pointer;color:var(--primary)">${h.name}</span>
+            <span onclick="I18n.open('hotel.html?id=${h.id}','_blank')" style="cursor:pointer;color:var(--primary)">${h.name}</span>
           </td>
           <td style="padding:10px 12px;text-align:center">${region?.emoji || ""} ${App.regionName(h.region)}</td>
           <td style="padding:10px 12px;text-align:center">
-            ${soldOutDays.map(d => `<span class="badge badge-danger" style="margin:2px">${DOW[d]}曜</span>`).join("")}
+            ${soldOutDays.map(d => `<span class="badge badge-danger" style="margin:2px">${DOW[d]}${I18n.t("曜","")}</span>`).join("")}
           </td>`;
         tbody.appendChild(tr);
       });

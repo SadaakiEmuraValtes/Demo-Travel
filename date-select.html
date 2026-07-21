@@ -10,15 +10,16 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <div class="page-wrap" style="margin-top:80px;max-width:960px">
     <div class="breadcrumb">
-      <a href="search.html">検索結果</a>
+      <a href="search.html" data-i18n-en="Search Results">検索結果</a>
       <span class="sep">›</span>
-      <a id="hotel-detail-link" href="#">ホテル詳細</a>
+      <a id="hotel-detail-link" href="#" data-i18n-en="Hotel Details">ホテル詳細</a>
       <span class="sep">›</span>
-      <span>日程・空き確認</span>
+      <span data-i18n-en="Dates & Availability">日程・空き確認</span>
     </div>
 
     <div id="hotel-info-banner" class="alert alert-info" style="margin-bottom:20px"></div>
@@ -27,10 +28,10 @@
 
       <!-- ① 日程・人数入力（左） -->
       <div class="form-section">
-        <h3>① 日程・人数を入力</h3>
+        <h3 data-i18n-en="① Enter Dates &amp; Guests">① 日程・人数を入力</h3>
 
         <div class="form-group" id="ci-group" style="margin-bottom:12px">
-          <label>チェックイン * <span style="font-size:11px;color:var(--warn)">（翌日以降）</span></label>
+          <label data-i18n-en="Check-in * (from the day after booking)">チェックイン * <span style="font-size:11px;color:var(--warn)">（翌日以降）</span></label>
           <div class="date-input-wrap">
             <input type="text" id="ds-checkin" placeholder="yyyy/mm/dd" maxlength="10"
               oninput="autoFormatDate(this);validateCheckin()">
@@ -39,11 +40,11 @@
                 onchange="syncFromPicker('ds-checkin');validateCheckin()">
             </div>
           </div>
-          <span class="error-msg">チェックインは翌日以降のみ指定できます</span>
+          <span class="error-msg" data-i18n-en="Check-in must be from the next day or later">チェックインは翌日以降のみ指定できます</span>
         </div>
 
         <div class="form-group" id="co-group" style="margin-bottom:12px">
-          <label>チェックアウト *</label>
+          <label data-i18n-en="Check-out *">チェックアウト *</label>
           <div class="date-input-wrap">
             <input type="text" id="ds-checkout" placeholder="yyyy/mm/dd" maxlength="10"
               oninput="autoFormatDate(this);validateDates()">
@@ -52,34 +53,34 @@
                 onchange="syncFromPicker('ds-checkout');validateDates()">
             </div>
           </div>
-          <span class="error-msg">チェックアウトはチェックイン翌日以降です</span>
+          <span class="error-msg" data-i18n-en="Check-out must be after check-in">チェックアウトはチェックイン翌日以降です</span>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
           <div class="form-group">
-            <label>人数</label>
+            <label data-i18n-en="Guests">人数</label>
             <select id="ds-guests">
-              <option value="1">1名</option>
-              <option value="2" selected>2名</option>
-              <option value="3">3名</option>
-              <option value="4">4名</option>
+              <option value="1" data-i18n-en="1 guest">1名</option>
+              <option value="2" selected data-i18n-en="2 guests">2名</option>
+              <option value="3" data-i18n-en="3 guests">3名</option>
+              <option value="4" data-i18n-en="4 guests">4名</option>
             </select>
           </div>
           <div class="form-group">
-            <label>部屋数</label>
+            <label data-i18n-en="Rooms">部屋数</label>
             <select id="ds-rooms">
-              <option value="1" selected>1室</option>
-              <option value="2">2室</option>
-              <option value="3">3室</option>
+              <option value="1" selected data-i18n-en="1 room">1室</option>
+              <option value="2" data-i18n-en="2 rooms">2室</option>
+              <option value="3" data-i18n-en="3 rooms">3室</option>
             </select>
           </div>
         </div>
 
-        <div class="alert alert-warn" style="margin-bottom:16px;font-size:13px">
+        <div class="alert alert-warn" style="margin-bottom:16px;font-size:13px" data-i18n-en="⚠️ Check-in must be from the day after the booking date or later">
           ⚠️ チェックインは予約日の翌日以降のみ選択できます
         </div>
 
-        <button id="btn-check-avail" class="btn btn-primary" style="width:100%;font-size:15px;padding:12px" onclick="checkAvailability()">
+        <button id="btn-check-avail" class="btn btn-primary" style="width:100%;font-size:15px;padding:12px" onclick="checkAvailability()" data-i18n-en="Check Availability →">
           空きを確認 →
         </button>
       </div>
@@ -87,8 +88,8 @@
       <!-- ② 空き確認結果（右） -->
       <div>
         <div class="form-section">
-          <h3>② 空き確認結果</h3>
-          <div id="avail-placeholder" class="alert alert-info" style="margin-bottom:0">
+          <h3 data-i18n-en="② Availability Results">② 空き確認結果</h3>
+          <div id="avail-placeholder" class="alert alert-info" style="margin-bottom:0" data-i18n-en='Enter dates on the left and click "Check Availability".'>
             左の日程を入力して「空きを確認」ボタンを押してください。
           </div>
           <div id="avail-result" class="hidden"></div>
@@ -108,14 +109,14 @@
 
       const params  = new URLSearchParams(window.location.search);
       const hotelId = params.get("hotelId") || App.loadSearchParams().hotelId;
-      if (!hotelId) { window.location.href = "search.html"; return; }
+      if (!hotelId) { I18n.go("search.html"); return; }
 
       currentHotel = App.getHotelById(hotelId);
-      if (!currentHotel) { window.location.href = "search.html"; return; }
+      if (!currentHotel) { I18n.go("search.html"); return; }
 
       document.getElementById("hotel-info-banner").innerHTML =
         `🏨 <strong>${currentHotel.name}</strong> &nbsp;📍 ${App.regionName(currentHotel.region)} &nbsp; ${App.starsHtml(currentHotel.stars)}`;
-      document.getElementById("hotel-detail-link").href = `hotel.html?id=${currentHotel.id}`;
+      document.getElementById("hotel-detail-link").href = I18n.urlWith(`hotel.html?id=${currentHotel.id}`);
 
       const sp = App.loadSearchParams();
 
@@ -179,21 +180,28 @@
         available: null
       }));
 
-      const DOW_JP = ["日","月","火","水","木","金","土"];
+      const DOW_JP = I18n.isEN()
+        ? ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+        : ["日","月","火","水","木","金","土"];
       let headerHtml = "";
       if (hasDate) {
-        headerHtml = avail.blockedDays.length > 0
-          ? `<div class="alert alert-warn" style="margin-bottom:12px;font-size:13px">
-               ⚠️ 以下の日程が満室のため、この期間は予約できません。<br>
-               ${avail.blockedDays.map(d => {
-                 const dt = new Date(d + "T00:00:00");
-                 return `<strong>${dt.getMonth()+1}月${dt.getDate()}日（${DOW_JP[dt.getDay()]}）</strong>`;
-               }).join("、")}
-             </div>`
-          : `<div class="alert alert-success" style="margin-bottom:12px;font-size:13px">
-               ✅ ${App.fmtDateJP(ci)} → ${App.fmtDateJP(co)}<br>
-               ${nightsCount}泊 / 大人${g}名
+        if (avail.blockedDays.length > 0) {
+          const blockedStr = avail.blockedDays.map(d => {
+            const dt = new Date(d + "T00:00:00");
+            return I18n.isEN()
+              ? `<strong>${dt.toLocaleDateString("en-US",{month:"short",day:"numeric"})} (${DOW_JP[dt.getDay()]})</strong>`
+              : `<strong>${dt.getMonth()+1}月${dt.getDate()}日（${DOW_JP[dt.getDay()]}）</strong>`;
+          }).join(I18n.t("、",", "));
+          headerHtml = `<div class="alert alert-warn" style="margin-bottom:12px;font-size:13px">
+               ⚠️ ${I18n.t("以下の日程が満室のため、この期間は予約できません。","The following dates are fully booked — this period is unavailable.")}<br>
+               ${blockedStr}
              </div>`;
+        } else {
+          headerHtml = `<div class="alert alert-success" style="margin-bottom:12px;font-size:13px">
+               ✅ ${App.fmtDateJP(ci)} → ${App.fmtDateJP(co)}<br>
+               ${I18n.t(`${nightsCount}泊 / 大人${g}名`,`${nightsCount} night(s) / ${g} adult(s)`)}
+             </div>`;
+        }
       }
 
       result.innerHTML = `
@@ -202,10 +210,10 @@
           <table id="avail-rooms-table" style="width:100%;border-collapse:collapse;font-size:13px">
             <thead>
               <tr>
-                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:left">部屋タイプ</th>
-                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">1泊</th>
-                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">合計</th>
-                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:center">空室</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:left">${I18n.t("部屋タイプ","Room Type")}</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">${I18n.t("1泊","Per Night")}</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:right">${I18n.t("合計","Total")}</th>
+                <th style="background:var(--accent);color:white;padding:8px 10px;text-align:center">${I18n.t("空室","Avail.")}</th>
                 <th style="background:var(--accent);color:white;padding:8px 10px"></th>
               </tr>
             </thead>
@@ -216,16 +224,16 @@
                 return `
                   <tr data-room-type="${rm.type}" data-available="${rm.available}" style="background:${i%2===0?'white':'var(--gray-lt)'}">
                     <td class="room-type" style="padding:8px 10px;font-weight:600;font-size:12px">${rm.type}</td>
-                    <td class="room-price" style="padding:8px 10px;text-align:right;color:var(--primary);font-weight:700">${hasDate ? App.fmtPrice(rm.price) : "-円"}</td>
-                    <td class="room-total" style="padding:8px 10px;text-align:right;font-weight:700">${total !== null ? App.fmtPrice(total) : "-円"}</td>
+                    <td class="room-price" style="padding:8px 10px;text-align:right;color:var(--primary);font-weight:700">${hasDate ? App.fmtPrice(rm.price) : I18n.t("-円","-")}</td>
+                    <td class="room-total" style="padding:8px 10px;text-align:right;font-weight:700">${total !== null ? App.fmtPrice(total) : I18n.t("-円","-")}</td>
                     <td style="padding:8px 10px;text-align:center">
-                      ${hasDate ? `<span class="badge room-avail-badge ${rm.available?'badge-success':'badge-danger'}">${rm.available?'空あり':'満室'}</span>` : `<span class="room-avail-badge" style="color:var(--gray)">-</span>`}
+                      ${hasDate ? `<span class="badge room-avail-badge ${rm.available?'badge-success':'badge-danger'}">${rm.available?I18n.t('空あり','Available'):I18n.t('満室','Fully Booked')}</span>` : `<span class="room-avail-badge" style="color:var(--gray)">-</span>`}
                     </td>
                     <td style="padding:8px 10px;text-align:center">
                       ${hasDate
                         ? (rm.available
-                            ? `<button id="btn-book-room-${rm.type.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm btn-book-room" data-room-type="${rm.type}" onclick="selectRoom('${safeType}',${rm.price},${total},'${ci}','${co}',${g},${r})">予　約</button>`
-                            : `<span style="font-size:11px;color:var(--gray)">満室</span>`)
+                            ? `<button id="btn-book-room-${rm.type.replace(/[\s　]/g,'_')}" class="btn btn-primary btn-sm btn-book-room" data-room-type="${rm.type}" onclick="selectRoom('${safeType}',${rm.price},${total},'${ci}','${co}',${g},${r})">${I18n.t("予　約","Book")}</button>`
+                            : `<span style="font-size:11px;color:var(--gray)">${I18n.t("満室","Fully Booked")}</span>`)
                         : `<span style="color:var(--gray)">-</span>`}
                     </td>
                   </tr>`;
@@ -249,10 +257,10 @@
       const g  = +document.getElementById("ds-guests").value;
       const r  = +document.getElementById("ds-rooms").value;
 
-      if (!ci || !co) { if (withLoading) App.showToast("日程を入力してください", "error"); return; }
+      if (!ci || !co) { if (withLoading) App.showToast(I18n.t("日程を入力してください","Please enter dates."), "error"); return; }
       const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
-      if (new Date(ci + "T00:00:00") < tomorrow) { if (withLoading) App.showToast("チェックインは翌日以降のみ指定できます", "error"); return; }
-      if (co <= ci) { if (withLoading) App.showToast("チェックアウトはチェックイン翌日以降です", "error"); return; }
+      if (new Date(ci + "T00:00:00") < tomorrow) { if (withLoading) App.showToast(I18n.t("チェックインは翌日以降のみ指定できます","Check-in must be from the next day or later."), "error"); return; }
+      if (co <= ci) { if (withLoading) App.showToast(I18n.t("チェックアウトはチェックイン翌日以降です","Check-out must be after check-in."), "error"); return; }
 
       const doRender = () => {
         nightsCount = App.calcNights(ci, co);
@@ -261,7 +269,7 @@
       };
 
       if (withLoading) {
-        App.showLoading("空きを確認中...");
+        App.showLoading(I18n.t("空きを確認中...","Checking availability..."));
         setTimeout(() => { App.hideLoading(); doRender(); }, 3000 + Math.random() * 2000);
       } else {
         doRender();
@@ -278,7 +286,7 @@
       sp.guests     = g;
       sp.rooms      = r;
       App.saveSearchParams(sp);
-      window.location.href = "booking.html";
+      I18n.go("booking.html");
     }
   </script>
 </body>

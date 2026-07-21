@@ -20,6 +20,7 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
 
   <div id="avail-wrap"></div>
 
@@ -35,7 +36,7 @@
       if (!avail || !avail.days) { wrap.textContent = "データを取得できませんでした。"; return; }
 
       const days      = avail.days;
-      const DOW       = ["日","月","火","水","木","金","土"];
+      const DOW       = I18n.isEN() ? ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"] : ["日","月","火","水","木","金","土"];
       const DOW_COLOR = { 0: "#DC2626", 6: "#0D9488" };
 
       // 日曜始まりになるよう先頭に空白スロットを追加
@@ -75,17 +76,17 @@
         html += "<tr>" + week.map(d => {
           if (d.disabled) return `<td class="avail-ng" style="opacity:0.3">-</td>`;
           if (d.available) {
-            return `<td class="avail-ok clickable" onclick="goBook('${d.date}')" title="${d.date} でチェックイン →日程選択へ">空あり</td>`;
+            return `<td class="avail-ok clickable" onclick="goBook('${d.date}')" title="${d.date} ${I18n.t('でチェックイン →日程選択へ','→ Select Dates')}">${I18n.t('空あり','Available')}</td>`;
           } else {
-            return `<td class="avail-ng">満　室</td>`;
+            return `<td class="avail-ng">${I18n.t('満　室','Sold Out')}</td>`;
           }
         }).join("") + "</tr>";
       });
       html += "</table>";
       html += `<div style="display:flex;gap:14px;margin-top:8px;font-size:12px;color:#64748B;flex-wrap:wrap">
-        <span><span style="display:inline-block;width:12px;height:12px;background:#D1FAE5;border:1px solid #CBD5E1;vertical-align:middle;margin-right:4px"></span>空あり（クリックで日程選択）</span>
-        <span><span style="display:inline-block;width:12px;height:12px;background:#FEE2E2;border:1px solid #CBD5E1;vertical-align:middle;margin-right:4px"></span>満室</span>
-        <span style="margin-left:auto;font-size:11px">※ 先14日間表示</span>
+        <span><span style="display:inline-block;width:12px;height:12px;background:#D1FAE5;border:1px solid #CBD5E1;vertical-align:middle;margin-right:4px"></span>${I18n.t('空あり（クリックで日程選択）','Available (click to select dates)')}</span>
+        <span><span style="display:inline-block;width:12px;height:12px;background:#FEE2E2;border:1px solid #CBD5E1;vertical-align:middle;margin-right:4px"></span>${I18n.t('満室','Sold Out')}</span>
+        <span style="margin-left:auto;font-size:11px">${I18n.t('※ 先14日間表示','* Showing next 14 days')}</span>
       </div>`;
 
       wrap.innerHTML = html;
@@ -105,7 +106,7 @@
       sp.checkin  = date;
       sp.checkout = App.fmtDate(coDate);
       App.saveSearchParams(sp);
-      window.parent.location.href = `date-select.html?hotelId=${hotelId}`;
+      window.parent.location.href = I18n.urlWith(`date-select.html?hotelId=${hotelId}`);
     }
   </script>
 </body>

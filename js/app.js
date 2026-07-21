@@ -45,7 +45,9 @@ const App = (() => {
   // ── 認証 ──────────────────────────────────────────────────
   function login(email, password) {
     const user = USERS.find(u => u.email === email && u.password === password);
-    if (!user) return { ok: false, msg: "メールアドレスまたはパスワードが正しくありません。" };
+    if (!user) return { ok: false, msg: typeof I18n !== "undefined"
+      ? I18n.t("メールアドレスまたはパスワードが正しくありません。", "Incorrect email or password.")
+      : "メールアドレスまたはパスワードが正しくありません。" };
     _state.currentUser = user;
     localStorage.setItem(LS.USER, JSON.stringify(user));
     renderHeader();
@@ -53,11 +55,12 @@ const App = (() => {
   }
 
   function logout() {
-    if (!confirm("ログアウトしますか？")) return;
+    if (!confirm(typeof I18n !== "undefined" ? I18n.t("ログアウトしますか？", "Are you sure you want to log out?") : "ログアウトしますか？")) return;
     _state.currentUser = null;
     localStorage.removeItem(LS.USER);
     renderHeader();
-    window.location.href = "index.html";
+    if (typeof I18n !== "undefined") I18n.go("index.html");
+    else window.location.href = "index.html";
   }
 
   function isLoggedIn() { return !!_state.currentUser; }
@@ -91,14 +94,18 @@ const App = (() => {
       new Date(b.checkin).getTime() < co
     );
     if (conflict) {
-      return { ok: false, msg: `選択した期間は既存の予約（${conflict.bookingNo}）と重複しています。` };
+      return { ok: false, msg: typeof I18n !== "undefined"
+        ? I18n.t(`選択した期間は既存の予約（${conflict.bookingNo}）と重複しています。`, `The selected dates overlap with an existing booking (${conflict.bookingNo}).`)
+        : `選択した期間は既存の予約（${conflict.bookingNo}）と重複しています。` };
     }
 
     // 翌日以降チェック
     const today = new Date(); today.setHours(0,0,0,0);
     const tomorrow = new Date(today); tomorrow.setDate(today.getDate()+1);
     if (new Date(data.checkin) < tomorrow) {
-      return { ok: false, msg: "チェックインは予約日の翌日以降のみ指定できます。" };
+      return { ok: false, msg: typeof I18n !== "undefined"
+        ? I18n.t("チェックインは予約日の翌日以降のみ指定できます。", "Check-in must be the day after the booking date or later.")
+        : "チェックインは予約日の翌日以降のみ指定できます。" };
     }
 
     const seq = _state.bookings.length + 1;
@@ -126,12 +133,16 @@ const App = (() => {
 
   function cancelBooking(bookingId) {
     const b = _state.bookings.find(b => b.id === bookingId);
-    if (!b) return { ok: false, msg: "予約が見つかりません。" };
+    if (!b) return { ok: false, msg: typeof I18n !== "undefined"
+      ? I18n.t("予約が見つかりません。", "Booking not found.")
+      : "予約が見つかりません。" };
 
     // 前日までチェック
     const checkin = new Date(b.checkin); checkin.setHours(0,0,0,0);
     const today   = new Date(); today.setHours(0,0,0,0);
-    if (today >= checkin) return { ok: false, msg: "キャンセル期限（チェックイン前日23:59）を過ぎています。" };
+    if (today >= checkin) return { ok: false, msg: typeof I18n !== "undefined"
+      ? I18n.t("キャンセル期限（チェックイン前日23:59）を過ぎています。", "The cancellation deadline (the day before check-in at 23:59) has passed.")
+      : "キャンセル期限（チェックイン前日23:59）を過ぎています。" };
 
     b.status = BOOKING_STATUS.CANCELLED;
     localStorage.setItem(LS.BOOKINGS, JSON.stringify(_state.bookings));
@@ -243,44 +254,48 @@ const App = (() => {
   function renderHeader() {
     const navEl = document.getElementById("header-nav-dynamic");
     if (!navEl) return;
+    const _u = typeof I18n !== "undefined" ? I18n.urlWith.bind(I18n) : (u => u);
+    const _t = typeof I18n !== "undefined" ? I18n.t.bind(I18n) : ((ja) => ja);
     if (isLoggedIn()) {
       const u = _state.currentUser;
       const initial = u.name.charAt(0);
       navEl.innerHTML = `
-        <a href="mypage.html" class="header-nav btn-mypage">マイページ</a>
-        <button onclick="App.logout()" class="header-nav">ログアウト</button>
+        <a href="${_u("mypage.html")}" class="header-nav btn-mypage">${_t("マイページ","My Page")}</a>
+        <button onclick="App.logout()" class="header-nav">${_t("ログアウト","Log Out")}</button>
         <div class="avatar-circle" title="${u.name}">${initial}</div>
       `;
     } else {
       navEl.innerHTML = `
-        <a href="login.html" class="header-nav">ログイン</a>
-        <a href="register.html" class="header-nav btn-register">会員登録</a>
+        <a href="${_u("login.html")}" class="header-nav">${_t("ログイン","Log In")}</a>
+        <a href="${_u("register.html")}" class="header-nav btn-register">${_t("会員登録","Register")}</a>
       `;
     }
   }
 
   // ── ログインモーダル ──────────────────────────────────────
   function showLoginModal(onSuccess) {
+    const _t = typeof I18n !== "undefined" ? I18n.t.bind(I18n) : ((ja) => ja);
+    const _u = typeof I18n !== "undefined" ? I18n.urlWith.bind(I18n) : (u => u);
     const overlay = document.createElement("div");
     overlay.className = "modal-overlay";
     overlay.id = "login-modal";
     overlay.innerHTML = `
       <div class="modal-box">
         <button class="modal-close" onclick="document.getElementById('login-modal').remove()">✕</button>
-        <div class="modal-title">🔐 ログインが必要です</div>
-        <p style="font-size:13px;color:var(--gray);margin-bottom:18px;">この操作にはログインが必要です。</p>
+        <div class="modal-title">🔐 ${_t("ログインが必要です","Login Required")}</div>
+        <p style="font-size:13px;color:var(--gray);margin-bottom:18px;">${_t("この操作にはログインが必要です。","You need to be logged in to do this.")}</p>
         <div class="form-group mb-16">
-          <label>メールアドレス</label>
+          <label>${_t("メールアドレス","Email")}</label>
           <input type="email" id="modal-email" placeholder="user@example.com" />
         </div>
         <div class="form-group mb-16">
-          <label>パスワード</label>
-          <input type="password" id="modal-pw" placeholder="パスワード" />
+          <label>${_t("パスワード","Password")}</label>
+          <input type="password" id="modal-pw" placeholder="${_t("パスワード","Password")}" />
         </div>
         <div id="modal-err" class="alert alert-danger hidden" style="margin-bottom:12px;"></div>
-        <button class="btn btn-primary" style="width:100%" onclick="App.loginFromModal()">ログイン</button>
+        <button class="btn btn-primary" style="width:100%" onclick="App.loginFromModal()">${_t("ログイン","Log In")}</button>
         <p style="text-align:center;margin-top:12px;font-size:13px;">
-          アカウントをお持ちでない方は<a href="register.html">会員登録</a>
+          ${_t("アカウントをお持ちでない方は","New here?")} <a href="${_u("register.html")}">${_t("会員登録","Sign Up")}</a>
         </p>
       </div>`;
     overlay.addEventListener("click", e => { if (e.target === overlay) overlay.remove(); });
@@ -300,7 +315,7 @@ const App = (() => {
       return;
     }
     document.getElementById("login-modal")?.remove();
-    showToast("ログインしました。", "success");
+    showToast(typeof I18n !== "undefined" ? I18n.t("ログインしました。","Logged in successfully.") : "ログインしました。", "success");
     if (typeof window._loginModalCallback === "function") {
       window._loginModalCallback(res.user);
     } else {
@@ -353,6 +368,11 @@ const App = (() => {
   function fmtDateJP(str) {
     if (!str) return "";
     const d = new Date(str);
+    if (typeof I18n !== "undefined" && I18n.isEN()) {
+      const MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      const DOW_EN    = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+      return `${MONTHS_EN[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} (${DOW_EN[d.getDay()]})`;
+    }
     const DOW = ["日","月","火","水","木","金","土"];
     return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${DOW[d.getDay()]}）`;
   }
@@ -392,7 +412,11 @@ const App = (() => {
   }
 
   // 曜日名
-  function dowName(n) { return ["日","月","火","水","木","金","土"][n]; }
+  function dowName(n) {
+    if (typeof I18n !== "undefined" && I18n.isEN())
+      return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][n];
+    return ["日","月","火","水","木","金","土"][n];
+  }
 
   // ホテルの背景色（地域別）
   const REGION_COLORS = {

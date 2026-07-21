@@ -3,29 +3,33 @@
 // ============================================================
 
 function buildDisclaimer() {
+  const _t = typeof I18n !== "undefined" ? I18n.t.bind(I18n) : ((ja) => ja);
   return `
 <div class="disclaimer-banner">
-  ⚠️ <strong>デモサイト：</strong>
-  このサイトはデモンストレーション目的で作成された架空のサービスです。
-  掲載されているホテル・料金・予約情報はすべてフィクションです。実際の予約・決済は行われません。
+  ⚠️ <strong>${_t("デモサイト：","Demo Site:")}</strong>
+  ${_t(
+    "このサイトはデモンストレーション目的で作成された架空のサービスです。掲載されているホテル・料金・予約情報はすべてフィクションです。実際の予約・決済は行われません。",
+    "This site is a fictitious service created for demonstration purposes. All hotels, prices, and booking information are fictional. No actual reservations or payments are made."
+  )}
 </div>`;
 }
 
 function buildHeader(activePage = "") {
-  const helpLink = "help.html";
+  const _t = typeof I18n !== "undefined" ? I18n.t.bind(I18n) : ((ja) => ja);
+  const _u = typeof I18n !== "undefined" ? I18n.urlWith.bind(I18n) : (u => u);
   return `
 <header id="site-header" class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo" id="logo">
+    <a href="${_u("index.html")}" class="logo" id="logo">
       <span class="plane">✈</span> TravelNest
     </a>
     <div class="header-search">
-      <input type="text" id="hs-keyword" placeholder="目的地・ホテル名" onkeydown="if(event.key==='Enter')headerSearch()">
-      <button id="btn-header-search" onclick="headerSearch()" title="検索">🔍</button>
+      <input type="text" id="hs-keyword" placeholder="${_t("目的地・ホテル名","Destination / Hotel")}" onkeydown="if(event.key==='Enter')headerSearch()">
+      <button id="btn-header-search" onclick="headerSearch()" title="${_t("検索","Search")}">🔍</button>
     </div>
     <nav id="global-nav" class="header-nav" style="display:flex;align-items:center;gap:4px;">
-      <a href="index.html" class="header-nav" id="nav-home">ホーム</a>
-      <a href="${helpLink}" class="header-nav" id="nav-help">ヘルプ</a>
+      <a href="${_u("index.html")}" class="header-nav" id="nav-home">${_t("ホーム","Home")}</a>
+      <a href="${_u("help.html")}" class="header-nav" id="nav-help">${_t("ヘルプ","Help")}</a>
       <span id="header-nav-dynamic" style="display:flex;align-items:center;gap:4px;"></span>
     </nav>
   </div>
@@ -33,21 +37,22 @@ function buildHeader(activePage = "") {
 }
 
 function buildFooter() {
+  const _t = typeof I18n !== "undefined" ? I18n.t.bind(I18n) : ((ja) => ja);
+  const _u = typeof I18n !== "undefined" ? I18n.urlWith.bind(I18n) : (u => u);
   return `
 <footer class="site-footer">
   <div class="footer-nav">
-    <a href="index.html">ホーム</a>
-    <a href="search.html">ホテル検索</a>
-    <a href="mypage.html">マイページ</a>
-    <a href="help.html">ヘルプ</a>
+    <a href="${_u("index.html")}">${_t("ホーム","Home")}</a>
+    <a href="${_u("search.html")}">${_t("ホテル検索","Hotel Search")}</a>
+    <a href="${_u("mypage.html")}">${_t("マイページ","My Page")}</a>
+    <a href="${_u("help.html")}">${_t("ヘルプ","Help")}</a>
   </div>
   <div>© 2025 TravelNest Demo – Valtes Inc.</div>
   <div class="disclaimer-footer">
-    【免責事項】本サイトはデモンストレーション目的で作成された架空のサービスです。
-    掲載されているホテル名・料金・写真・レビュー・予約情報はすべて架空のフィクションであり、
-    実在のホテルや企業とは一切関係ありません。本サイト上での予約・決済・個人情報の送受信は
-    行われず、いかなる法的拘束力も生じません。本デモは株式会社バルテスの内部デモ用途のみに
-    使用されます。
+    ${_t(
+      "【免責事項】本サイトはデモンストレーション目的で作成された架空のサービスです。掲載されているホテル名・料金・写真・レビュー・予約情報はすべて架空のフィクションであり、実在のホテルや企業とは一切関係ありません。本サイト上での予約・決済・個人情報の送受信は行われず、いかなる法的拘束力も生じません。本デモは株式会社バルテスの内部デモ用途のみに使用されます。",
+      "[Disclaimer] This site is a fictitious service created for demonstration purposes. All hotel names, prices, photos, reviews, and booking information are entirely fictional and have no connection to real hotels or companies. No reservations, payments, or personal data transmissions are made, and no legal obligations arise. This demo is for internal use by Valtes Inc. only."
+    )}
   </div>
 </footer>
 <div id="toast-container"></div>`;
@@ -137,10 +142,16 @@ const Cal = (() => {
     const mt    = (input?.value || '').match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
     const sel   = mt ? `${mt[1]}-${mt[2]}-${mt[3]}` : null;
     const today = new Date(); today.setHours(0,0,0,0);
-    const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-    const DOWS   = ['日','月','火','水','木','金','土'];
+    const _en   = typeof I18n !== "undefined" && I18n.isEN();
+    const MONTHS = _en
+      ? ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+      : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const DOWS   = _en
+      ? ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+      : ['日','月','火','水','木','金','土'];
     const first  = new Date(_y, _m, 1);
     const last   = new Date(_y, _m + 1, 0);
+    const monthLabel = _en ? `${MONTHS[_m]} ${_y}` : `${_y}年 ${MONTHS[_m]}`;
 
     let head = DOWS.map((d, i) =>
       `<div class="cal-dow${i===0?' cal-sun':i===6?' cal-sat':''}">${d}</div>`
@@ -162,13 +173,13 @@ const Cal = (() => {
 
     popup.innerHTML = `
       <div class="cal-header" id="cal-header">
-        <button class="cal-nav" id="cal-prev" onclick="Cal.move(-1)" title="前の月">◀</button>
-        <span id="cal-month-label">${_y}年 ${MONTHS[_m]}</span>
-        <button class="cal-nav" id="cal-next" onclick="Cal.move(1)" title="次の月">▶</button>
+        <button class="cal-nav" id="cal-prev" onclick="Cal.move(-1)" title="${_en ? 'Previous month' : '前の月'}">◀</button>
+        <span id="cal-month-label">${monthLabel}</span>
+        <button class="cal-nav" id="cal-next" onclick="Cal.move(1)" title="${_en ? 'Next month' : '次の月'}">▶</button>
       </div>
       <div class="cal-grid" id="cal-grid">${head}${cells}</div>
       <div class="cal-footer" id="cal-footer">
-        <button class="btn btn-secondary btn-sm" id="cal-close-btn" onclick="Cal.close()">✕ 閉じる</button>
+        <button class="btn btn-secondary btn-sm" id="cal-close-btn" onclick="Cal.close()">${_en ? '✕ Close' : '✕ 閉じる'}</button>
       </div>`;
   }
 
@@ -193,7 +204,8 @@ function headerSearch() {
   const sp = App.loadSearchParams();
   sp.keyword = kw;
   App.saveSearchParams(sp);
-  window.location.href = "search.html";
+  if (typeof I18n !== "undefined") I18n.go("search.html");
+  else window.location.href = "search.html";
 }
 
 function buildPage({ title, body, scripts = [], activePage = "" }) {
@@ -202,4 +214,6 @@ function buildPage({ title, body, scripts = [], activePage = "" }) {
   document.body.insertAdjacentHTML("beforeend", buildFooter());
   // buildPageはApp.init()のrenderHeader()より後に実行されるためここで再描画する
   if (typeof App !== "undefined") App.renderHeader();
+  // i18n: DOM に追加された要素を含めて翻訳を適用する
+  if (typeof I18n !== "undefined") I18n.apply();
 }

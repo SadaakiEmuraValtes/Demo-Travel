@@ -10,6 +10,7 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <div id="hotel-detail-wrap" class="page-wrap" style="margin-top:80px;max-width:900px"></div>
@@ -22,7 +23,7 @@
 
       const params = new URLSearchParams(window.location.search);
       const hotelId = params.get("id");
-      if (!hotelId) { window.location.href = "search.html"; return; }
+      if (!hotelId) { I18n.go("search.html"); return; }
 
       currentHotel = App.getHotelById(hotelId);
       if (!currentHotel) { document.getElementById("hotel-detail-wrap").innerHTML = "<p>ホテルが見つかりません。</p>"; return; }
@@ -48,8 +49,8 @@
 
       document.getElementById("hotel-detail-wrap").innerHTML = `
         <div class="breadcrumb">
-          <a href="index.html">ホーム</a><span class="sep">›</span>
-          <a href="search.html">ホテル検索</a><span class="sep">›</span>
+          <a href="${I18n.urlWith('index.html')}">${I18n.t("ホーム","Home")}</a><span class="sep">›</span>
+          <a href="${I18n.urlWith('search.html')}">${I18n.t("ホテル検索","Hotel Search")}</a><span class="sep">›</span>
           <span>${h.name}</span>
         </div>
 
@@ -63,7 +64,7 @@
             color:white;border:2px solid rgba(255,255,255,.5);
             border-radius:20px;padding:6px 16px;font-size:14px;
             font-weight:700;cursor:pointer;transition:.2s;
-          ">${isFav ? "♥ 保存済み" : "♡ お気に入り"}</button>
+          ">${isFav ? I18n.t("♥ 保存済み","♥ Saved") : I18n.t("♡ お気に入り","♡ Favorite")}</button>
         </div>
 
         <!-- 基本情報 -->
@@ -76,43 +77,43 @@
             </div>
             <p style="font-size:15px;color:var(--gray);line-height:1.7;margin-bottom:14px">${h.desc}</p>
             <div class="facility-tags">
-              ${h.facilities.map(f=>`<span class="facility-tag">${f}</span>`).join("")}
+              ${h.facilities.map(f=>`<span class="facility-tag">${I18n.tFacility(f)}</span>`).join("")}
             </div>
           </div>
           <div style="text-align:right;background:var(--light-bg);padding:20px;border-radius:10px;min-width:200px">
-            <div style="font-size:13px;color:var(--gray);margin-bottom:6px">最安料金</div>
-            <div style="font-size:30px;font-weight:700;color:var(--primary)">${App.fmtPrice(h.priceBase)}<span style="font-size:14px;font-weight:400">/泊〜</span></div>
-            <div style="font-size:11px;color:var(--gray);margin-bottom:16px">税・サービス料込み</div>
+            <div style="font-size:13px;color:var(--gray);margin-bottom:6px">${I18n.t("最安料金","Best Rate")}</div>
+            <div style="font-size:30px;font-weight:700;color:var(--primary)">${App.fmtPrice(h.priceBase)}<span style="font-size:14px;font-weight:400">${I18n.t("/泊〜","/ night~")}</span></div>
+            <div style="font-size:11px;color:var(--gray);margin-bottom:16px">${I18n.t("税・サービス料込み","Incl. tax & service charge")}</div>
             <button class="btn btn-primary" style="width:100%;font-size:15px;padding:11px;flex-direction:column;gap:2px" onclick="handleBook()">
               ${hasDate
-                ? `<span style="font-size:11px;font-weight:400;opacity:.85">${App.fmtDateSlash(sp.checkin)} 〜 ${App.fmtDateSlash(sp.checkout)}</span><span>この日程で予約する</span>`
-                : `<span>日程を選んで予約する</span>`}
+                ? `<span style="font-size:11px;font-weight:400;opacity:.85">${App.fmtDateSlash(sp.checkin)} 〜 ${App.fmtDateSlash(sp.checkout)}</span><span>${I18n.t("この日程で予約する","Book for These Dates")}</span>`
+                : `<span>${I18n.t("日程を選んで予約する","Select Dates & Book")}</span>`}
             </button>
-            <div style="font-size:11px;color:var(--gray);margin-top:6px">ログインが必要です</div>
+            <div style="font-size:11px;color:var(--gray);margin-top:6px">${I18n.t("ログインが必要です","Login required")}</div>
           </div>
         </div>
 
         <!-- 先2週間空き状況（iframe） -->
         <div class="card" style="margin-bottom:24px">
           <div style="background:var(--accent);color:white;padding:14px 18px;border-radius:8px 8px 0 0;font-size:15px;font-weight:700">
-            📅 先2週間の空き状況
+            ${I18n.t("📅 先2週間の空き状況","📅 Availability (Next 14 Days)")}
           </div>
           <div style="padding:16px 16px 8px">
-            <iframe src="avail-frame.html?id=${h.id}" style="width:100%;height:185px;border:none;display:block" scrolling="no" title="空き状況カレンダー"></iframe>
+            <iframe src="${I18n.urlWith('avail-frame.html?id=' + h.id)}" style="width:100%;height:185px;border:none;display:block" scrolling="no" title="${I18n.t('空き状況カレンダー','Availability Calendar')}"></iframe>
           </div>
         </div>
 
         <!-- 部屋タイプ一覧 -->
         <div class="card" style="margin-bottom:24px">
           <div style="background:var(--primary);color:white;padding:14px 18px;border-radius:8px 8px 0 0;font-size:15px;font-weight:700">
-            🛏 部屋タイプ・料金
+            ${I18n.t("🛏 部屋タイプ・料金","🛏 Room Types & Rates")}
           </div>
           <div style="padding:16px">
             <table style="width:100%;border-collapse:collapse;font-size:14px">
               <thead>
                 <tr>
-                  <th style="background:var(--gray-lt);padding:10px 12px;text-align:left;color:var(--accent)">部屋タイプ</th>
-                  <th style="background:var(--gray-lt);padding:10px 12px;text-align:right;color:var(--accent)">料金（1泊〜）</th>
+                  <th style="background:var(--gray-lt);padding:10px 12px;text-align:left;color:var(--accent)">${I18n.t("部屋タイプ","Room Type")}</th>
+                  <th style="background:var(--gray-lt);padding:10px 12px;text-align:right;color:var(--accent)">${I18n.t("料金（1泊〜）","Rate (per night~)")}</th>
                   <th style="background:var(--gray-lt);padding:10px 12px;text-align:center;color:var(--accent)"></th>
                 </tr>
               </thead>
@@ -123,10 +124,10 @@
 
         <!-- 周辺情報 -->
         <div class="alert alert-info" style="margin-bottom:24px">
-          📍 <strong>${App.regionName(h.region)}エリア</strong>のホテルです。
-          詳細な地図・交通アクセスについては実際の地図サービスでご確認ください。
+          📍 <strong>${App.regionName(h.region)}${I18n.t("エリア","Area")}</strong>${I18n.t("のホテルです。"," hotel.")}<br>
+          ${I18n.t("詳細な地図・交通アクセスについては実際の地図サービスでご確認ください。","For detailed maps and access information, please use an external map service.")}
           <span style="font-size:11px;color:var(--gray);display:block;margin-top:4px">
-            ※ デモサイトのため詳細な住所・電話番号は掲載しておりません。
+            ${I18n.t("※ デモサイトのため詳細な住所・電話番号は掲載しておりません。","* Detailed address and phone number are not listed as this is a demo site.")}
           </span>
         </div>
       `;
@@ -143,11 +144,11 @@
         tr.style.background = i % 2 === 0 ? "white" : "var(--gray-lt)";
         tr.innerHTML = `
           <td style="padding:10px 12px;font-weight:600">${rt.name}
-            <span style="font-size:11px;color:var(--gray);margin-left:6px">全${rt.totalRooms}室</span>
+            <span style="font-size:11px;color:var(--gray);margin-left:6px">${I18n.t(`全${rt.totalRooms}室`,`${rt.totalRooms} rooms`)}</span>
           </td>
           <td style="padding:10px 12px;text-align:right;font-weight:700;color:var(--primary)">${App.fmtPrice(price)}</td>
           <td style="padding:10px 12px;text-align:center">
-            <button class="btn btn-secondary btn-sm" onclick="handleBookRoom('${rt.name.replace(/'/g,"\\'")}',${price})">この部屋で予約</button>
+            <button class="btn btn-secondary btn-sm" onclick="handleBookRoom('${rt.name.replace(/'/g,"\\'")}',${price})">${I18n.t("この部屋で予約","Book This Room")}</button>
           </td>`;
         tbody.appendChild(tr);
       });
@@ -158,7 +159,7 @@
       const sp = App.loadSearchParams();
       sp.hotelId = currentHotel.id;
       App.saveSearchParams(sp);
-      window.location.href = `date-select.html?hotelId=${currentHotel.id}`;
+      I18n.go(`date-select.html?hotelId=${currentHotel.id}`);
     }
 
     function handleBookRoom(roomType, price) {
@@ -168,7 +169,7 @@
       sp.roomType  = roomType;
       sp.roomPrice = price;
       App.saveSearchParams(sp);
-      window.location.href = `date-select.html?hotelId=${currentHotel.id}`;
+      I18n.go(`date-select.html?hotelId=${currentHotel.id}`);
     }
 
     function toggleFav() {
@@ -176,9 +177,9 @@
       if (isFav === false && !App.isLoggedIn()) return;
       const btn = document.getElementById(isFav ? "btn-fav-off" : "btn-fav-on");
       btn.id = isFav ? "btn-fav-on" : "btn-fav-off";
-      btn.textContent = isFav ? "♥ 保存済み" : "♡ お気に入り";
+      btn.textContent = isFav ? I18n.t("♥ 保存済み","♥ Saved") : I18n.t("♡ お気に入り","♡ Favorite");
       btn.style.background = isFav ? "#E11D48" : "rgba(255,255,255,.2)";
-      App.showToast(isFav ? "お気に入りに追加しました" : "お気に入りを解除しました", isFav ? "success" : "info");
+      App.showToast(isFav ? I18n.t("お気に入りに追加しました","Added to favourites") : I18n.t("お気に入りを解除しました","Removed from favourites"), isFav ? "success" : "info");
     }
   </script>
 </body>

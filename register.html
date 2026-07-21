@@ -10,61 +10,62 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <div class="page-wrap" style="margin-top:80px;max-width:520px">
     <div style="text-align:center;margin-bottom:28px">
       <a href="index.html" style="font-size:24px;font-weight:700;color:var(--primary);text-decoration:none">✈ TravelNest</a>
-      <div style="font-size:13px;color:var(--gray);margin-top:4px">新規会員登録</div>
+      <div style="font-size:13px;color:var(--gray);margin-top:4px" data-i18n-en="Create Account">新規会員登録</div>
     </div>
 
     <div class="alert alert-info" style="margin-bottom:20px;font-size:13px">
-      💡 登録完了後すぐにご利用いただけます。<br>
-      <span style="color:var(--gray)">※ デモサイトのため登録情報はブラウザ内にのみ保存されます。</span>
+      <span data-i18n-en="💡 You can start using the service immediately after registration.">💡 登録完了後すぐにご利用いただけます。</span><br>
+      <span style="color:var(--gray)" data-i18n-en="* As this is a demo site, registration data is stored only in your browser.">※ デモサイトのため登録情報はブラウザ内にのみ保存されます。</span>
     </div>
 
     <div class="form-section">
-      <h2 style="font-size:18px;color:var(--accent);margin-bottom:20px">会員情報を入力してください</h2>
+      <h2 style="font-size:18px;color:var(--accent);margin-bottom:20px" data-i18n-en="Enter Your Details">会員情報を入力してください</h2>
 
       <div id="reg-err" class="alert alert-danger hidden" style="margin-bottom:16px"></div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group" id="g-sei"><label>姓 *</label><input type="text" id="r-sei" placeholder="山田"><span class="error-msg">必須項目です</span></div>
-        <div class="form-group" id="g-mei"><label>名 *</label><input type="text" id="r-mei" placeholder="太郎"><span class="error-msg">必須項目です</span></div>
+        <div class="form-group" id="g-sei"><label data-i18n-en="Last Name *">姓 *</label><input type="text" id="r-sei" placeholder="山田" data-i18n-ph-en="Last Name"><span class="error-msg" data-i18n-en="Required">必須項目です</span></div>
+        <div class="form-group" id="g-mei"><label data-i18n-en="First Name *">名 *</label><input type="text" id="r-mei" placeholder="太郎" data-i18n-ph-en="First Name"><span class="error-msg" data-i18n-en="Required">必須項目です</span></div>
       </div>
-      <div class="form-group mt-16" id="g-email"><label>メールアドレス *</label><input type="email" id="r-email" placeholder="user@example.com"><span class="error-msg">正しいメールアドレスを入力してください</span></div>
+      <div class="form-group mt-16" id="g-email"><label data-i18n-en="Email Address *">メールアドレス *</label><input type="email" id="r-email" placeholder="user@example.com"><span class="error-msg" data-i18n-en="Please enter a valid email address">正しいメールアドレスを入力してください</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-        <div class="form-group" id="g-pw1"><label>パスワード * <span style="font-size:11px;color:var(--gray)">（8文字以上）</span></label><input type="password" id="r-pw1" placeholder="●●●●●●●●"><span class="error-msg">8文字以上の英数字を入力してください</span></div>
-        <div class="form-group" id="g-pw2"><label>パスワード（確認）*</label><input type="password" id="r-pw2" placeholder="●●●●●●●●"><span class="error-msg">パスワードが一致しません</span></div>
+        <div class="form-group" id="g-pw1"><label data-i18n-en="Password * (8+ characters)">パスワード * <span style="font-size:11px;color:var(--gray)">（8文字以上）</span></label><input type="password" id="r-pw1" placeholder="●●●●●●●●"><span class="error-msg" data-i18n-en="Please enter 8 or more alphanumeric characters">8文字以上の英数字を入力してください</span></div>
+        <div class="form-group" id="g-pw2"><label data-i18n-en="Confirm Password *">パスワード（確認）*</label><input type="password" id="r-pw2" placeholder="●●●●●●●●"><span class="error-msg" data-i18n-en="Passwords do not match">パスワードが一致しません</span></div>
       </div>
-      <div class="form-group mt-16" id="g-phone"><label>電話番号 *</label><input type="tel" id="r-phone" placeholder="090-XXXX-XXXX"><span class="error-msg">必須項目です</span></div>
+      <div class="form-group mt-16" id="g-phone"><label data-i18n-en="Phone Number *">電話番号 *</label><input type="tel" id="r-phone" placeholder="090-XXXX-XXXX"><span class="error-msg" data-i18n-en="Required">必須項目です</span></div>
       <div class="form-group mt-16" id="g-birth">
-        <label>生年月日 * <span style="font-size:11px;color:var(--gray)">（yyyy/mm/dd）</span></label>
+        <label data-i18n-en="Date of Birth * (yyyy/mm/dd)">生年月日 * <span style="font-size:11px;color:var(--gray)">（yyyy/mm/dd）</span></label>
         <input type="text" id="r-birth" placeholder="2000/01/01" maxlength="10" oninput="autoFormatDate(this)">
-        <span class="error-msg">正しい日付を入力してください（18歳以上）</span>
+        <span class="error-msg" data-i18n-en="Please enter a valid date (must be 18 or older)">正しい日付を入力してください（18歳以上）</span>
       </div>
 
       <div style="margin-top:20px;padding:12px;background:var(--gray-lt);border-radius:6px;font-size:13px">
         <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer">
           <input type="checkbox" id="r-agree" style="margin-top:2px;flex-shrink:0">
-          <span><a href="help.html">利用規約</a>および<a href="help.html">プライバシーポリシー</a>に同意する *</span>
+          <span><a href="help.html" data-i18n-en="Terms of Service">利用規約</a><span data-i18n-en=" and ">および</span><a href="help.html" data-i18n-en="Privacy Policy">プライバシーポリシー</a><span data-i18n-en=" — I agree *">に同意する *</span></span>
         </label>
       </div>
 
-      <button class="btn btn-primary" style="width:100%;font-size:15px;padding:12px;margin-top:20px" onclick="doRegister()">
+      <button class="btn btn-primary" style="width:100%;font-size:15px;padding:12px;margin-top:20px" onclick="doRegister()" data-i18n-en="Create Account">
         会員登録する
       </button>
 
       <p style="text-align:center;font-size:13px;color:var(--gray);margin-top:16px">
-        すでにアカウントをお持ちの方は <a href="login.html">ログイン</a>
+        <span data-i18n-en="Already have an account?">すでにアカウントをお持ちの方は</span> <a href="login.html" data-i18n-en="Log In">ログイン</a>
       </p>
     </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      buildPage({ title: "会員登録" });
-      if (App.isLoggedIn()) window.location.href = "mypage.html";
+      buildPage({ title: I18n.t("会員登録","Register") });
+      if (App.isLoggedIn()) I18n.go("mypage.html");
     });
 
     function doRegister() {
@@ -106,9 +107,9 @@
         else birthG.classList.remove("has-error");
       }
 
-      if (!agree) { App.showToast("利用規約に同意してください", "error"); valid = false; }
+      if (!agree) { App.showToast(I18n.t("利用規約に同意してください","Please agree to the Terms of Service."), "error"); valid = false; }
       if (!valid) {
-        document.getElementById("reg-err").textContent = "入力内容を確認してください。";
+        document.getElementById("reg-err").textContent = I18n.t("入力内容を確認してください。","Please check your entries.");
         document.getElementById("reg-err").classList.remove("hidden");
         return;
       }
@@ -117,7 +118,7 @@
       // 既存メールチェック
       if (USERS.find(u => u.email === email)) {
         document.getElementById("g-email").classList.add("has-error");
-        document.getElementById("reg-err").textContent = "このメールアドレスはすでに登録されています。";
+        document.getElementById("reg-err").textContent = I18n.t("このメールアドレスはすでに登録されています。","This email address is already registered.");
         document.getElementById("reg-err").classList.remove("hidden");
         return;
       }
@@ -133,13 +134,13 @@
       };
       USERS.push(newUser);
 
-      App.showLoading("登録処理中...");
+      App.showLoading(I18n.t("登録処理中...","Processing registration..."));
       setTimeout(() => {
         App.hideLoading();
         const res = App.login(email, pw1);
         if (res.ok) {
-          App.showToast(`ようこそ、${newUser.name}さん！`, "success");
-          setTimeout(() => { window.location.href = "mypage.html"; }, 600);
+          App.showToast(I18n.t(`ようこそ、${newUser.name}さん！`,`Welcome, ${newUser.name}!`), "success");
+          setTimeout(() => { I18n.go("mypage.html"); }, 600);
         }
       }, 1500);
     }

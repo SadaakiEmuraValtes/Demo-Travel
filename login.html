@@ -10,61 +10,62 @@
 <body>
   <script src="data/master.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/layout.js"></script>
 
   <div class="page-wrap" style="margin-top:80px;max-width:440px">
     <div style="text-align:center;margin-bottom:28px">
       <a href="index.html" style="font-size:24px;font-weight:700;color:var(--primary);text-decoration:none">✈ TravelNest</a>
-      <div style="font-size:13px;color:var(--gray);margin-top:4px">デモサイト</div>
+      <div style="font-size:13px;color:var(--gray);margin-top:4px" data-i18n-en="Demo Site">デモサイト</div>
     </div>
 
     <div class="form-section">
-      <h2 style="font-size:20px;color:var(--accent);margin-bottom:20px;text-align:center">ログイン</h2>
+      <h2 style="font-size:20px;color:var(--accent);margin-bottom:20px;text-align:center" data-i18n-en="Log In">ログイン</h2>
 
       <div id="login-err" class="alert alert-danger hidden" style="margin-bottom:16px"></div>
 
       <div class="form-group mb-16" id="g-email">
-        <label>メールアドレス *</label>
+        <label data-i18n-en="Email Address *">メールアドレス *</label>
         <input type="email" id="email" placeholder="user@example.com" autocomplete="email"
           onkeydown="if(event.key==='Enter')doLogin()">
-        <span class="error-msg">メールアドレスを入力してください</span>
+        <span class="error-msg" data-i18n-en="Please enter your email address">メールアドレスを入力してください</span>
       </div>
       <div class="form-group mb-16" id="g-pw">
-        <label>パスワード *</label>
-        <input type="password" id="password" placeholder="パスワード"
+        <label data-i18n-en="Password *">パスワード *</label>
+        <input type="password" id="password" placeholder="パスワード" data-i18n-ph-en="Password"
           onkeydown="if(event.key==='Enter')doLogin()">
-        <span class="error-msg">パスワードを入力してください</span>
+        <span class="error-msg" data-i18n-en="Please enter your password">パスワードを入力してください</span>
       </div>
 
-      <button id="btn-login" class="btn btn-primary" style="width:100%;font-size:15px;padding:12px;margin-bottom:12px" onclick="doLogin()">
+      <button id="btn-login" class="btn btn-primary" style="width:100%;font-size:15px;padding:12px;margin-bottom:12px" onclick="doLogin()" data-i18n-en="Log In">
         ログイン
       </button>
 
       <div style="text-align:center;margin:16px 0;color:var(--gray);font-size:13px;position:relative">
-        <span style="background:white;padding:0 12px;position:relative;z-index:1">または</span>
+        <span style="background:white;padding:0 12px;position:relative;z-index:1" data-i18n-en="or">または</span>
         <hr style="position:absolute;top:50%;width:100%;border:none;border-top:1px solid var(--gray-bd)">
       </div>
 
-      <button class="btn" style="width:100%;background:var(--accent);color:white;padding:12px;margin-bottom:20px;font-size:14px" onclick="App.showToast('Googleログインはデモでは利用できません','info')">
+      <button class="btn" style="width:100%;background:var(--accent);color:white;padding:12px;margin-bottom:20px;font-size:14px" onclick="App.showToast(I18n.t('Googleログインはデモでは利用できません','Google login is not available in this demo.'),'info')" data-i18n-en="🔵 Log In with Google (not available in demo)">
         🔵 Googleでログイン（デモ未対応）
       </button>
 
       <p style="text-align:center;font-size:13px;color:var(--gray)">
-        アカウントをお持ちでない方は
-        <a href="register.html">新規会員登録</a>
+        <span data-i18n-en="New here?">アカウントをお持ちでない方は</span>
+        <a href="register.html" data-i18n-en="Sign Up">新規会員登録</a>
       </p>
     </div>
 
     <div class="alert alert-info" style="margin-top:20px;font-size:13px">
-      🧪 <strong>テストアカウント</strong>でお試しいただけます。<br>
-      <a href="help.html#accounts">テストアカウント一覧を見る →</a>
+      🧪 <strong data-i18n-en="Test Accounts">テストアカウント</strong><span data-i18n-en=" are available for testing.">でお試しいただけます。</span><br>
+      <a href="help.html#accounts" data-i18n-en="View Test Accounts →">テストアカウント一覧を見る →</a>
     </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      buildPage({ title: "ログイン" });
-      if (App.isLoggedIn()) window.location.href = "mypage.html";
+      buildPage({ title: I18n.t("ログイン","Log In") });
+      if (App.isLoggedIn()) I18n.go("mypage.html");
       document.getElementById("email").focus();
     });
 
@@ -79,7 +80,7 @@
       if (!email) { document.getElementById("g-email").classList.add("has-error"); return; }
       if (!pw)    { document.getElementById("g-pw").classList.add("has-error"); return; }
 
-      App.showLoading("ログイン中...");
+      App.showLoading(I18n.t("ログイン中...","Logging in..."));
       const delay = 3000 + Math.random() * 2000;
       setTimeout(() => {
         App.hideLoading();
@@ -89,11 +90,11 @@
           errEl.classList.remove("hidden");
           return;
         }
-        App.showToast(`ようこそ、${res.user.name}さん！`, "success");
+        App.showToast(I18n.t(`ようこそ、${res.user.name}さん！`,`Welcome, ${res.user.name}!`), "success");
         const redir = sessionStorage.getItem("tn_redirect_after_login");
         setTimeout(() => {
           if (redir) { sessionStorage.removeItem("tn_redirect_after_login"); window.location.href = redir; }
-          else window.location.href = "mypage.html";
+          else I18n.go("mypage.html");
         }, 500);
       }, delay);
     }
