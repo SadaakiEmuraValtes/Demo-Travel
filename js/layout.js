@@ -31,6 +31,12 @@ function buildHeader(activePage = "") {
       <a href="${_u("index.html")}" class="header-nav" id="nav-home">${_t("ホーム","Home")}</a>
       <a href="${_u("help.html")}" class="header-nav" id="nav-help">${_t("ヘルプ","Help")}</a>
       <span id="header-nav-dynamic" style="display:flex;align-items:center;gap:4px;"></span>
+      <button id="btn-lang-toggle" onclick="toggleLang()" style="
+        background:transparent;border:1px solid rgba(255,255,255,.5);
+        color:white;border-radius:12px;padding:3px 10px;font-size:12px;
+        cursor:pointer;font-weight:600;letter-spacing:.5px;transition:.2s;
+        margin-left:4px;
+      ">${_t("EN","日本語")}</button>
     </nav>
   </div>
 </header>`;
@@ -185,6 +191,17 @@ const Cal = (() => {
 
   return { open: _open, close: _close, move: _move, pick: _pick };
 })();
+
+// 言語切替
+function toggleLang() {
+  const url = new URL(window.location.href);
+  if (I18n.isEN()) {
+    url.searchParams.delete('lang');
+  } else {
+    url.searchParams.set('lang', 'en');
+  }
+  window.location.href = url.toString();
+}
 
 // カレンダーピッカーを開く
 function openDatePicker(id) {
