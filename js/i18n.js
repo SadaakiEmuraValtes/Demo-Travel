@@ -3,17 +3,9 @@
 // ============================================================
 
 const I18n = (() => {
-  const SS_KEY = 'tn_lang';
-
-  // ── URL ?lang=en → sessionStorage（スクリプトロード時に即時実行）──
-  (() => {
-    const p = new URLSearchParams(window.location.search);
-    if (p.get('lang') === 'en') sessionStorage.setItem(SS_KEY, 'en');
-  })();
-
-  // ── 英語モード判定 ─────────────────────────────────────────
+  // ── 英語モード判定（URLパラメータのみで制御）──────────────
   function isEN() {
-    return sessionStorage.getItem(SS_KEY) === 'en';
+    return new URLSearchParams(window.location.search).get('lang') === 'en';
   }
 
   // ── 言語に応じた文字列を返す ──────────────────────────────
